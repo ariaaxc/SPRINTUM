@@ -1,0 +1,610 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>Спринтум — трекер задач</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Days+One&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Questrial&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Raleway:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        /* Твой полный CSS из предыдущих версий (я вставлю его, чтобы не потерять) */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: linear-gradient(162.53deg, #FFFCCA 3.68%, #000F99 52.75%, #FFFCCA 94.14%);
+            background-attachment: fixed;
+            display: flex;
+            justify-content: center;
+            min-height: 100vh;
+        }
+
+        .site {
+            width: 100%;
+            display: grid;
+            grid-template-columns: 1fr;
+        }
+
+        /* ========== 1. ОРИГИНАЛЬНЫЙ ДИЗАЙН ДЛЯ 1920px И ВЫШЕ ========== */
+        @media (min-width: 1920px) {
+            .site {
+                max-width: 1920px;
+                margin: 0 auto;
+                grid-template-rows: 200px 1fr 200px;
+                min-height: 4000px;
+            }
+            .main {
+                grid-row: 2;
+                display: grid;
+                grid-template-rows: 1fr 1fr 1fr;
+            }
+            .auth-section {
+                grid-row: 1;
+                display: flex;
+                flex-direction: row;
+                justify-content: space-between;
+                align-items: center;
+                padding: 58.5px 75px 58.5px 0;
+                gap: 220px;
+                width: 100%;
+            }
+            .auth-welcome {
+                width: 960px;
+                height: 1080px;
+                background: #FFFFFF;
+                border-radius: 0 290.909px 290.909px 0;
+                flex-shrink: 0;
+                position: relative;
+                box-shadow: 0 7px 5px rgba(0, 15, 153, 0.2);
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+                align-items: center;
+            }
+            .welcome-login, .welcome-register {
+                width: 100%;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+            }
+            .welcome-title {
+                font-family: 'Days One', sans-serif;
+                font-size: 70px;
+                font-weight: 400;
+                color: #000F99;
+                line-height: 1.2;
+                margin: 0 0 20px 0;
+                text-align: center;
+            }
+            .no-account {
+                font-family: 'Questrial', sans-serif;
+                font-size: 40px;
+                color: #3D3E45;
+                margin: 0 0 30px 0;
+                text-align: center;
+            }
+            .register-btn {
+                font-family: 'Raleway', sans-serif;
+                font-size: 50px;
+                font-weight: 600;
+                color: #FFFFFF;
+                background: #000F99;
+                border: none;
+                border-radius: 20px;
+                width: 464px;
+                height: 124px;
+                padding: 0;
+                margin: 0 auto;
+                cursor: pointer;
+                text-align: center;
+                line-height: 124px;
+                transition: all 0.3s ease;
+            }
+            .auth-form {
+                width: 665px;
+                height: 936px;
+                background: #FFFFFF;
+                border-radius: 90px;
+                flex-shrink: 0;
+                position: relative;
+            }
+            .login-title {
+                font-family: 'Days One', sans-serif;
+                font-size: 70px;
+                font-weight: 400;
+                color: #000F99;
+                margin: 91px 235px 0 236px;
+                text-align: center;
+            }
+            .input-field {
+                position: relative;
+                width: 454px;
+                height: 106px;
+                margin: 40px 105px 0 106px;
+                background: #E4E2E2;
+            }
+            .password-field {
+                margin-top: 44px;
+            }
+            .field-label {
+                font-family: 'Questrial', sans-serif;
+                font-size: 35px;
+                color: #3D3E45;
+                position: absolute;
+                left: 22px;
+                top: 35px;
+            }
+            .field-input {
+                width: 100%;
+                height: 100%;
+                background: transparent;
+                border: none;
+                padding-left: 22px;
+                font-family: 'Questrial', sans-serif;
+                font-size: 35px;
+                color: #3D3E45;
+                outline: none;
+            }
+            .field-input::placeholder {
+                color: #3D3E45;
+                opacity: 0.7;
+            }
+            .icon-placeholder {
+                position: absolute;
+                width: 50px;
+                height: 50px;
+                top: 28px;
+                background: #CCCCCC;
+            }
+            .mail-icon { right: 33px; left: auto; }
+            .lock-icon { right: 33px; left: auto; }
+            .name-icon { right: 33px; left: auto; width: 60px; height: 60px; top: 23px; }
+            .options-row {
+                display: flex;
+                align-items: center;
+                margin-left: 165px;
+                margin-right: 133px;
+            }
+            .forgot-row {
+                margin-top: 51px;
+                margin-bottom: 0;
+                gap: 17px;
+            }
+            .remember-row {
+                margin-top: 28px;
+                margin-bottom: 0;
+                gap: 20px;
+            }
+            .forgot-link, .remember-text {
+                font-family: 'Questrial', sans-serif;
+                font-size: 35px;
+                color: #3D3E45;
+                text-decoration: none;
+            }
+            .forgot-link:hover { text-decoration: underline; }
+            .custom-checkbox {
+                display: inline-block;
+                position: relative;
+                cursor: pointer;
+                flex-shrink: 0;
+            }
+            .checkmark {
+                display: inline-block;
+                width: 30px;
+                height: 30px;
+                border-radius: 50%;
+                border: 3px solid #000F99;
+                background: transparent;
+            }
+            .login-btn {
+                font-family: 'Raleway', sans-serif;
+                font-size: 45px;
+                font-weight: 500;
+                color: #FFFFFF;
+                background: #000F99;
+                border: none;
+                border-radius: 20px;
+                width: 454px;
+                height: 106px;
+                margin: 43px 105px 135px 106px;
+                padding: 0;
+                text-align: center;
+                line-height: 106px;
+                cursor: pointer;
+                transition: all 0.3s ease;
+                display: block;
+            }
+            /* Секция 2: карточки */
+            .features-section {
+                grid-row: 2;
+                width: 1920px;
+                padding: 58.5px 75px 58.5px 0;
+                display: flex;
+                justify-content: flex-start;
+            }
+            .features-list {
+                display: flex;
+                flex-direction: row;
+                gap: 60px;
+                list-style: none;
+                padding: 200px 75px 40px;
+                margin: 0;
+            }
+            .feature-item {
+                display: flex;
+                flex-direction: column;
+                width: 550px;
+            }
+            .feature-card {
+                background: #FFFFFF;
+                border-radius: 40px;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+            }
+            .card-image {
+                width: 550px;
+                height: 732px;
+                background: #CCCCCC;
+                border-radius: 40px;
+            }
+            .card-text {
+                margin-top: 50px;
+                width: 550px;
+                display: flex;
+                flex-direction: column;
+                gap: 15px;
+            }
+            .card-title {
+                font-family: 'Raleway', sans-serif;
+                font-size: 36px;
+                font-weight: 600;
+                color: #FFFFFF;
+                margin: 0;
+                text-align: left;
+            }
+            .card-description {
+                font-family: 'Instrument Sans', sans-serif;
+                font-size: 29px;
+                font-weight: 400;
+                color: #FFFFFF;
+                margin: 0;
+                text-align: left;
+                line-height: 1.3;
+            }
+            /* Секция 3 */
+            .showcase-section {
+                grid-row: 3;
+                width: 1920px;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+            }
+            .showcase-group {
+                width: 100%;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                padding: 86px 210px;
+            }
+            .showcase-image {
+                width: 1500px;
+                height: 844px;
+                background: #CCCCCC;
+                border-radius: 40px;
+                margin-bottom: 48px;
+            }
+            .showcase-text {
+                width: 1500px;
+                text-align: center;
+                padding: 0 210px 86px 210px;
+            }
+            .showcase-title {
+                font-family: 'Raleway', sans-serif;
+                font-size: 55px;
+                font-weight: 700;
+                color: #FFFFFF;
+                margin: 0;
+                margin-bottom: 16px;
+            }
+            .showcase-description {
+                font-family: 'Inter', sans-serif;
+                font-size: 35px;
+                font-weight: 500;
+                color: #FFFFFF;
+                margin: 0;
+                line-height: 1.3;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="site">
+        <div class="header">
+            <div class="logo">Спринтум</div>
+            <div class="nav">
+                <a href="#">Главная</a>
+                <a href="#">Возможности</a>
+                <a href="#">Контакты</a>
+            </div>
+        </div>
+        
+        <div class="main">
+            <div class="auth-section" id="auth-section">
+                <div class="auth-welcome">
+                    <div class="welcome-login">
+                        <h1 class="welcome-title">Добро пожаловать, разработчик!</h1>
+                        <p class="no-account">Нет аккаунта?</p>
+                        <button class="register-btn" id="showRegisterBtn">Регистрация</button>
+                    </div>
+                    <div class="welcome-register" style="display: none;">
+                        <h1 class="welcome-title">Присоединяйтесь!</h1>
+                        <p class="no-account">Уже есть аккаунт?</p>
+                        <button class="register-btn" id="showLoginBtn">Войти</button>
+                    </div>
+                </div>
+                
+                <div class="auth-form">
+                    <!-- Форма входа -->
+                    <div class="form-container login-form">
+                        <h2 class="login-title">Вход</h2>
+                        <div class="input-field email-field">
+                            <input type="email" class="field-input" id="loginEmail" placeholder="Эл. почта">
+                            <div class="icon-placeholder mail-icon"></div>
+                        </div>
+                        <div class="input-field password-field">
+                            <input type="password" class="field-input" id="loginPassword" placeholder="Пароль">
+                            <div class="icon-placeholder lock-icon"></div>
+                        </div>
+                        <div class="options-row forgot-row">
+                            <a href="#" class="forgot-link">Забыли пароль?</a>
+                            <label class="custom-checkbox">
+                                <input type="checkbox" hidden>
+                                <span class="checkmark"></span>
+                            </label>
+                        </div>
+                        <div class="options-row remember-row">
+                            <span class="remember-text">Запомнить меня</span>
+                            <label class="custom-checkbox">
+                                <input type="checkbox" hidden>
+                                <span class="checkmark"></span>
+                            </label>
+                        </div>
+                        <button class="login-btn" onclick="doLogin()">Войти</button>
+                    </div>
+
+                    <!-- Форма регистрации -->
+                    <div class="form-container register-form" style="display: none;">
+                        <h2 class="login-title">Регистрация</h2>
+                        <div class="input-field">
+                            <input type="text" class="field-input" id="regName" placeholder="Имя">
+                            <div class="icon-placeholder name-icon"></div>
+                        </div>
+                        <div class="input-field email-field">
+                            <input type="email" class="field-input" id="regEmail" placeholder="Эл. почта">
+                            <div class="icon-placeholder mail-icon"></div>
+                        </div>
+                        <div class="input-field password-field">
+                            <input type="password" class="field-input" id="regPassword" placeholder="Пароль">
+                            <div class="icon-placeholder lock-icon"></div>
+                        </div>
+                        <div class="options-row">
+                            <label class="custom-checkbox">
+                                <input type="checkbox" hidden>
+                                <span class="checkmark"></span>
+                            </label>
+                            <span class="remember-text">Я согласен с условиями</span>
+                        </div>
+                        <button class="login-btn" onclick="doRegister()">Зарегистрироваться</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Секция задач (появляется после входа) -->
+            <div id="tasks-section" style="display: none;">
+                <div style="text-align: center; margin-bottom: 20px;">
+                    <h2 style="color: white;">Мои задачи</h2>
+                    <button onclick="logout()" style="background: #ff6b6b; border: none; padding: 8px 20px; border-radius: 20px; color: white; cursor: pointer;">Выйти</button>
+                </div>
+                <div style="background: rgba(255,255,255,0.1); backdrop-filter: blur(10px); border-radius: 30px; padding: 30px; max-width: 600px; margin: 0 auto;">
+                    <div style="display: flex; gap: 10px; margin-bottom: 20px;">
+                        <input type="text" id="taskTitle" placeholder="Новая задача..." style="flex: 1; padding: 12px; border-radius: 20px; border: none;">
+                        <select id="taskPriority" style="padding: 12px; border-radius: 20px; border: none;">
+                            <option value="low">Низкий</option>
+                            <option value="medium" selected>Средний</option>
+                            <option value="high">Высокий</option>
+                        </select>
+                        <button onclick="createTask()" style="background: #4CAF50; border: none; padding: 12px 20px; border-radius: 20px; color: white; cursor: pointer;">➕</button>
+                    </div>
+                    <div id="tasksList" style="display: flex; flex-direction: column; gap: 10px;"></div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="footer">
+            <p>© 2025 Спринтум. Все права защищены.</p>
+        </div>
+    </div>
+
+    <script>
+        // === ПЕРЕКЛЮЧЕНИЕ ФОРМ ===
+        document.getElementById('showRegisterBtn').addEventListener('click', () => {
+            document.querySelector('.login-form').style.display = 'none';
+            document.querySelector('.register-form').style.display = 'flex';
+            document.querySelector('.welcome-login').style.display = 'none';
+            document.querySelector('.welcome-register').style.display = 'flex';
+        });
+        document.getElementById('showLoginBtn').addEventListener('click', () => {
+            document.querySelector('.register-form').style.display = 'none';
+            document.querySelector('.login-form').style.display = 'flex';
+            document.querySelector('.welcome-register').style.display = 'none';
+            document.querySelector('.welcome-login').style.display = 'flex';
+        });
+
+        let currentUserId = null;
+
+        function showMessage(text, isError = false) {
+            const msg = document.createElement('div');
+            msg.textContent = text;
+            msg.style.position = 'fixed';
+            msg.style.bottom = '20px';
+            msg.style.right = '20px';
+            msg.style.backgroundColor = isError ? '#f44336' : '#4CAF50';
+            msg.style.color = 'white';
+            msg.style.padding = '12px 20px';
+            msg.style.borderRadius = '8px';
+            msg.style.zIndex = '9999';
+            document.body.appendChild(msg);
+            setTimeout(() => msg.remove(), 3000);
+        }
+
+        // === ВХОД ===
+        window.doLogin = async function() {
+            const username = document.getElementById('loginEmail').value.trim();
+            const password = document.getElementById('loginPassword').value;
+            if (!username || !password) {
+                showMessage('Заполните email и пароль', true);
+                return;
+            }
+            try {
+                const response = await fetch('/auth/login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ username, password })
+                });
+                if (!response.ok) {
+                    const error = await response.json();
+                    throw new Error(error.detail || 'Неверный логин или пароль');
+                }
+                const data = await response.json();
+                currentUserId = data.user_id;
+                showMessage(`Добро пожаловать, ${username}!`);
+                // Показать секцию задач и скрыть авторизацию
+                document.getElementById('auth-section').style.display = 'none';
+                document.getElementById('tasks-section').style.display = 'block';
+                loadTasks();
+            } catch (error) {
+                showMessage(error.message, true);
+            }
+        };
+
+        // === РЕГИСТРАЦИЯ ===
+        window.doRegister = async function() {
+            const username = document.getElementById('regEmail').value.trim();
+            const password = document.getElementById('regPassword').value;
+            if (!username || !password) {
+                showMessage('Заполните email и пароль', true);
+                return;
+            }
+            try {
+                const response = await fetch('/auth/register', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ username, password })
+                });
+                if (!response.ok) {
+                    const error = await response.json();
+                    throw new Error(error.detail || 'Ошибка регистрации');
+                }
+                const data = await response.json();
+                showMessage(data.message || 'Регистрация успешна! Теперь войдите.');
+                document.getElementById('showLoginBtn').click();
+            } catch (error) {
+                showMessage(error.message, true);
+            }
+        };
+
+        // === ЗАГРУЗКА ЗАДАЧ ===
+        async function loadTasks() {
+            try {
+                const response = await fetch('/tasks');
+                const tasks = await response.json();
+                const userTasks = tasks.filter(t => t.user_id === currentUserId);
+                const container = document.getElementById('tasksList');
+                container.innerHTML = '';
+                if (userTasks.length === 0) {
+                    container.innerHTML = '<p style="text-align:center; color:#ccc;">Задач пока нет</p>';
+                    return;
+                }
+                userTasks.forEach(task => {
+                    const taskDiv = document.createElement('div');
+                    taskDiv.style.background = 'white';
+                    taskDiv.style.borderRadius = '20px';
+                    taskDiv.style.padding = '15px';
+                    taskDiv.style.display = 'flex';
+                    taskDiv.style.justifyContent = 'space-between';
+                    taskDiv.style.alignItems = 'center';
+                    if (task.status === 'done') taskDiv.style.opacity = '0.6';
+                    taskDiv.innerHTML = `
+                        <div>
+                            <strong style="color:#000F99;">${task.title}</strong>
+                            <span style="margin-left: 10px; font-size:12px; background:${task.priority === 'high' ? '#e57373' : task.priority === 'medium' ? '#ffb74d' : '#64b5f6'}; padding:2px 8px; border-radius:12px; color:white;">${task.priority}</span>
+                        </div>
+                        <div>
+                            ${task.status !== 'done' ? `<button onclick="updateTaskStatus(${task.id})" style="background:#81c784; border:none; border-radius:15px; width:30px; height:30px; margin-right:5px; cursor:pointer;">✓</button>` : ''}
+                            <button onclick="deleteTask(${task.id})" style="background:#e57373; border:none; border-radius:15px; width:30px; height:30px; cursor:pointer;">✕</button>
+                        </div>
+                    `;
+                    container.appendChild(taskDiv);
+                });
+            } catch(e) { console.error(e); }
+        }
+
+        // === СОЗДАНИЕ ЗАДАЧИ ===
+        window.createTask = async function() {
+            const title = document.getElementById('taskTitle').value.trim();
+            const priority = document.getElementById('taskPriority').value;
+            if (!title) return showMessage('Введите задачу', true);
+            try {
+                await fetch('/tasks', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ user_id: currentUserId, title, priority })
+                });
+                document.getElementById('taskTitle').value = '';
+                loadTasks();
+                showMessage('Задача добавлена');
+            } catch(e) { showMessage('Ошибка', true); }
+        };
+
+        // === ОБНОВЛЕНИЕ СТАТУСА ===
+        window.updateTaskStatus = async function(taskId) {
+            try {
+                await fetch(`/tasks/${taskId}?new_status=done`, { method: 'PATCH' });
+                loadTasks();
+                showMessage('Задача выполнена!');
+            } catch(e) { showMessage('Ошибка', true); }
+        };
+
+        // === УДАЛЕНИЕ ЗАДАЧИ ===
+        window.deleteTask = async function(taskId) {
+            if (!confirm('Удалить задачу?')) return;
+            try {
+                await fetch(`/tasks/${taskId}`, { method: 'DELETE' });
+                loadTasks();
+                showMessage('Задача удалена');
+            } catch(e) { showMessage('Ошибка', true); }
+        };
+
+        // === ВЫХОД ===
+        window.logout = function() {
+            currentUserId = null;
+            document.getElementById('auth-section').style.display = 'flex';
+            document.getElementById('tasks-section').style.display = 'none';
+            document.getElementById('loginEmail').value = '';
+            document.getElementById('loginPassword').value = '';
+            document.getElementById('regEmail').value = '';
+            document.getElementById('regPassword').value = '';
+        };
+    </script>
+</body>
+</html>
