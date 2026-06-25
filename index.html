@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
     <title>Спринтум — трекер задач</title>
-    
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='24' fill='%23000F99'/><text x='50' y='70' font-size='62' font-family='Arial, sans-serif' font-weight='bold' text-anchor='middle' fill='white'>С</text><path d='M30 55 L45 72 L78 32' stroke='%23FFFCCA' stroke-width='6' stroke-linecap='round' stroke-linejoin='round' fill='none'/></svg>">
     <link href="https://fonts.googleapis.com/css2?family=Days+One&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Questrial&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Raleway:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -116,7 +116,7 @@
                 </div>
             </div>
 
-            <!-- Секция задач (появляется после входа) -->
+            <!-- Секция задач -->
             <div id="tasksSection" style="display: none;">
                 <div class="tasks-wrapper">
                     <div class="tasks-header">
@@ -130,36 +130,124 @@
                             <option value="medium" selected>Средний приоритет</option>
                             <option value="high">Высокий приоритет</option>
                         </select>
+                        <input type="text" id="taskDescription" placeholder="Описание (необязательно)">
+                        <input type="date" id="taskDueDate" placeholder="Дедлайн (необязательно)">
                         <button class="add-task-btn" onclick="createTask()">➕ Добавить</button>
                     </div>
                     <div id="tasksList" class="tasks-list"></div>
                 </div>
             </div>
 
-            <!-- Остальные секции дизайна -->
+            <!-- Три карточки со статистикой -->
             <div class="features-section">
                 <ul class="features-list">
+                    <!-- Карточка 1: График -->
                     <li class="feature-item">
-                        <div class="feature-card"><div class="card-image"></div></div>
-                        <div class="card-text"><h3 class="card-title">Заголовок карточки</h3><p class="card-description">Описание карточки</p></div>
+                        <div class="feature-card">
+                            <div class="card-image" style="background: #FFFFFF; display: flex; flex-direction: column; align-items: flex-start; justify-content: flex-start; padding: 20px; height: 100%;">
+                                <div style="width: 100%; text-align: left; font-family: 'Raleway', sans-serif; font-size: 26px; color: #000F99; font-weight: 700;">📈 Статистика по приоритетам</div>
+                                <div style="width: 100%; flex: 1; display: flex; flex-direction: column; justify-content: flex-end; padding-bottom: 10px; margin-top: 10px;">
+                                    <div style="width: 100%; height: 100%; display: flex; align-items: flex-end; justify-content: space-around; padding: 10px 0; border-bottom: 2px solid #3D3E45; position: relative; min-height: 150px;">
+                                        <div style="display: flex; flex-direction: column; align-items: center; width: 30%; height: 100%; justify-content: flex-end;">
+                                            <div id="highBar" style="width: 50px; background: #FF6B6B; height: 0px; transition: height 0.5s ease; border-radius: 5px 5px 0 0; position: relative; max-height: 275px;">
+                                                <span id="highPercent" style="position: absolute; top: -20px; left: 50%; transform: translateX(-50%); font-family: 'Questrial', sans-serif; font-size: 12px; color: #3D3E45;">0%</span>
+                                            </div>
+                                            <span style="font-family: 'Questrial', sans-serif; font-size: 14px; margin-top: 5px; font-weight: 600; color: #3D3E45;">Высокий</span>
+                                        </div>
+                                        <div style="display: flex; flex-direction: column; align-items: center; width: 30%; height: 100%; justify-content: flex-end;">
+                                            <div id="mediumBar" style="width: 50px; background: #FFB74D; height: 0px; transition: height 0.5s ease; border-radius: 5px 5px 0 0; position: relative; max-height: 275px;">
+                                                <span id="mediumPercent" style="position: absolute; top: -20px; left: 50%; transform: translateX(-50%); font-family: 'Questrial', sans-serif; font-size: 12px; color: #3D3E45;">0%</span>
+                                            </div>
+                                            <span style="font-family: 'Questrial', sans-serif; font-size: 14px; margin-top: 5px; font-weight: 600; color: #3D3E45;">Средний</span>
+                                        </div>
+                                        <div style="display: flex; flex-direction: column; align-items: center; width: 30%; height: 100%; justify-content: flex-end;">
+                                            <div id="lowBar" style="width: 50px; background: #64B5F6; height: 0px; transition: height 0.5s ease; border-radius: 5px 5px 0 0; position: relative; max-height: 275px;">
+                                                <span id="lowPercent" style="position: absolute; top: -20px; left: 50%; transform: translateX(-50%); font-family: 'Questrial', sans-serif; font-size: 12px; color: #3D3E45;">0%</span>
+                                            </div>
+                                            <span style="font-family: 'Questrial', sans-serif; font-size: 14px; margin-top: 5px; font-weight: 600; color: #3D3E45;">Низкий</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </li>
+                    <!-- Карточка 2: Выполненные задачи -->
                     <li class="feature-item">
-                        <div class="feature-card"><div class="card-image"></div></div>
-                        <div class="card-text"><h3 class="card-title">Заголовок карточки</h3><p class="card-description">Описание карточки</p></div>
+                        <div class="feature-card">
+                            <div class="card-image" style="background: #FFFFFF; display: flex; flex-direction: column; align-items: flex-start; justify-content: flex-start; padding: 20px; overflow-y: auto; max-height: 732px;">
+                                <div style="width: 100%; text-align: left; font-family: 'Raleway', sans-serif; font-size: 26px; color: #000F99; font-weight: 700;">✅ Выполненные</div>
+                                <div id="doneTasksList" style="width: 100%; display: flex; flex-direction: column; gap: 8px; margin-top: 10px;"></div>
+                            </div>
+                        </div>
                     </li>
+                    <!-- Карточка 3: Активные задачи -->
                     <li class="feature-item">
-                        <div class="feature-card"><div class="card-image"></div></div>
-                        <div class="card-text"><h3 class="card-title">Заголовок карточки</h3><p class="card-description">Описание карточки</p></div>
+                        <div class="feature-card">
+                            <div class="card-image" style="background: #FFFFFF; display: flex; flex-direction: column; align-items: flex-start; justify-content: flex-start; padding: 20px; overflow-y: auto; max-height: 732px;">
+                                <div style="width: 100%; text-align: left; font-family: 'Raleway', sans-serif; font-size: 26px; color: #000F99; font-weight: 700;">⏳ Активные</div>
+                                <div id="activeTasksList" style="width: 100%; display: flex; flex-direction: column; gap: 8px; margin-top: 10px;"></div>
+                            </div>
+                        </div>
                     </li>
                 </ul>
             </div>
 
+            <!-- Большая карточка (общая статистика) -->
             <div class="showcase-section">
-                <div class="showcase-group">
-                    <div class="showcase-image"></div>
-                    <div class="showcase-text">
-                        <h2 class="showcase-title">Заголовок карточки</h2>
-                        <p class="showcase-description">Описание карточки</p>
+                <div class="showcase-group" style="background: #FFFFFF; border-radius: 60px; padding: 40px; display: flex; gap: 40px; flex-wrap: wrap;">
+                    <div style="flex: 1; min-width: 300px;">
+                        <h3 style="font-family: 'Raleway', sans-serif; font-size: 28px; color: #000F99; margin-bottom: 20px;">📊 Общая статистика</h3>
+                        <div style="display: flex; align-items: center; gap: 30px; flex-wrap: wrap;">
+                            <div style="position: relative; width: 150px; height: 150px;">
+                                <svg viewBox="0 0 120 120" width="150" height="150" style="transform: rotate(-90deg);">
+                                    <circle cx="60" cy="60" r="50" fill="none" stroke="#E0E0E0" stroke-width="14"/>
+                                    <circle cx="60" cy="60" r="50" fill="none" stroke="#4CAF50" stroke-width="14" 
+                                        stroke-dasharray="0 314" stroke-linecap="round"
+                                        id="bigDoneCircle"/>
+                                    <circle cx="60" cy="60" r="50" fill="none" stroke="#FF6B6B" stroke-width="14" 
+                                        stroke-dasharray="0 314" stroke-linecap="round"
+                                        id="bigActiveCircle"/>
+                                </svg>
+                                <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); text-align: center;">
+                                    <span id="bigTotalCount" style="font-family: 'Raleway', sans-serif; font-size: 28px; font-weight: 700; color: #000F99;">0</span>
+                                    <br><span style="font-family: 'Questrial', sans-serif; font-size: 12px; color: #3D3E45;">всего</span>
+                                </div>
+                            </div>
+                            <div style="display: flex; flex-direction: column; gap: 8px;">
+                                <span style="font-family: 'Questrial', sans-serif; font-size: 16px; color: #3D3E45;"><span style="display: inline-block; width: 16px; height: 16px; background: #4CAF50; border-radius: 50%; vertical-align: middle; margin-right: 8px;"></span> Выполнено: <strong id="bigDoneCount">0</strong></span>
+                                <span style="font-family: 'Questrial', sans-serif; font-size: 16px; color: #3D3E45;"><span style="display: inline-block; width: 16px; height: 16px; background: #FF6B6B; border-radius: 50%; vertical-align: middle; margin-right: 8px;"></span> В работе: <strong id="bigActiveCount">0</strong></span>
+                                <span style="font-family: 'Questrial', sans-serif; font-size: 16px; color: #3D3E45; margin-top: 10px; border-top: 1px solid #eee; padding-top: 10px;">📅 Завершено: <strong id="bigDonePercent">0%</strong></span>
+                            </div>
+                        </div>
+                    </div>
+                    <div style="flex: 1; min-width: 300px;">
+                        <h3 style="font-family: 'Raleway', sans-serif; font-size: 24px; color: #000F99; margin-bottom: 20px;">📈 Распределение</h3>
+                        <div style="display: flex; flex-direction: column; gap: 15px;">
+                            <div>
+                                <div style="display: flex; justify-content: space-between; font-family: 'Questrial', sans-serif; font-size: 14px; color: #3D3E45; margin-bottom: 4px;">
+                                    <span>✅ Выполнено</span>
+                                    <span id="bigDonePercentLabel">0%</span>
+                                </div>
+                                <div style="width: 100%; height: 12px; background: #E0E0E0; border-radius: 6px; overflow: hidden;">
+                                    <div id="bigDoneBar" style="height: 100%; background: #4CAF50; width: 0%; transition: width 0.5s ease;"></div>
+                                </div>
+                            </div>
+                            <div>
+                                <div style="display: flex; justify-content: space-between; font-family: 'Questrial', sans-serif; font-size: 14px; color: #3D3E45; margin-bottom: 4px;">
+                                    <span>⏳ В работе</span>
+                                    <span id="bigActivePercentLabel">0%</span>
+                                </div>
+                                <div style="width: 100%; height: 12px; background: #E0E0E0; border-radius: 6px; overflow: hidden;">
+                                    <div id="bigActiveBar" style="height: 100%; background: #FF6B6B; width: 0%; transition: width 0.5s ease;"></div>
+                                </div>
+                            </div>
+                            <div style="margin-top: 15px; display: flex; gap: 20px; flex-wrap: wrap; font-family: 'Questrial', sans-serif; font-size: 14px; color: #3D3E45;">
+                                <span>📊 Приоритеты:</span>
+                                <span><span style="display: inline-block; width: 12px; height: 12px; background: #FF6B6B; border-radius: 50%; vertical-align: middle; margin-right: 4px;"></span> <span id="bigHighCount">0</span> выс.</span>
+                                <span><span style="display: inline-block; width: 12px; height: 12px; background: #FFB74D; border-radius: 50%; vertical-align: middle; margin-right: 4px;"></span> <span id="bigMediumCount">0</span> сред.</span>
+                                <span><span style="display: inline-block; width: 12px; height: 12px; background: #64B5F6; border-radius: 50%; vertical-align: middle; margin-right: 4px;"></span> <span id="bigLowCount">0</span> низ.</span>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -170,7 +258,25 @@
         </div>
     </div>
 
+    <!-- Модальное окно -->
+    <div id="taskModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); backdrop-filter: blur(5px); justify-content: center; align-items: center; z-index: 9999;">
+        <div style="background: white; border-radius: 30px; padding: 40px; max-width: 500px; width: 90%; position: relative;">
+            <button onclick="closeModal()" style="position: absolute; top: 15px; right: 20px; background: none; border: none; font-size: 24px; cursor: pointer;">✕</button>
+            <h3 id="modalTitle" style="font-family: 'Raleway', sans-serif; font-size: 28px; color: #000F99; margin-bottom: 15px;">Задача</h3>
+            <input type="text" id="modalDescriptionInput" placeholder="Описание" style="width: 100%; padding: 10px; border-radius: 12px; border: 1px solid #ccc; font-family: 'Questrial', sans-serif; font-size: 16px; margin-bottom: 10px;">
+            <input type="date" id="modalDueDateInput" style="width: 100%; padding: 10px; border-radius: 12px; border: 1px solid #ccc; font-family: 'Questrial', sans-serif; font-size: 16px; margin-bottom: 10px;" placeholder="Дедлайн (необязательно)">
+            <select id="modalPriorityInput" style="width: 100%; padding: 10px; border-radius: 12px; border: 1px solid #ccc; font-family: 'Questrial', sans-serif; font-size: 16px; margin-bottom: 15px;">
+                <option value="low">Низкий приоритет</option>
+                <option value="medium">Средний приоритет</option>
+                <option value="high">Высокий приоритет</option>
+            </select>
+            <p id="modalPriorityDisplay" style="font-family: 'Questrial', sans-serif; font-size: 16px; color: #3D3E45; margin-bottom: 15px; display: none;">Приоритет: ...</p>
+            <button onclick="saveTaskDetails()" id="modalSaveBtn" style="background: #000F99; color: white; border: none; padding: 12px 20px; border-radius: 20px; cursor: pointer; font-family: 'Raleway', sans-serif; font-size: 16px; width: 100%;">Сохранить изменения</button>
+        </div>
+    </div>
+
     <style>
+        /* ========== ПОЛНЫЙ CSS ========== */
         * {
             margin: 0;
             padding: 0;
@@ -191,7 +297,7 @@
             grid-template-columns: 1fr;
         }
 
-        /* ========== 1. ОРИГИНАЛЬНЫЙ ДИЗАЙН ДЛЯ 1920px И ВЫШЕ ========== */
+        /* === ДЕСКТОП (1920px) === */
         @media (min-width: 1920px) {
             .site {
                 max-width: 1920px;
@@ -398,36 +504,16 @@
                 display: flex;
                 justify-content: center;
                 align-items: center;
+                height: 100%;
             }
             .card-image {
                 width: 550px;
                 height: 732px;
-                background: #CCCCCC;
+                background: #FFFFFF;
                 border-radius: 40px;
             }
             .card-text {
-                margin-top: 50px;
-                width: 550px;
-                display: flex;
-                flex-direction: column;
-                gap: 15px;
-            }
-            .card-title {
-                font-family: 'Raleway', sans-serif;
-                font-size: 36px;
-                font-weight: 600;
-                color: #FFFFFF;
-                margin: 0;
-                text-align: left;
-            }
-            .card-description {
-                font-family: 'Instrument Sans', sans-serif;
-                font-size: 29px;
-                font-weight: 400;
-                color: #FFFFFF;
-                margin: 0;
-                text-align: left;
-                line-height: 1.3;
+                display: none;
             }
             .showcase-section {
                 grid-row: 3;
@@ -435,308 +521,63 @@
                 display: flex;
                 justify-content: center;
                 align-items: center;
+                padding: 20px;
             }
             .showcase-group {
                 width: 100%;
+                max-width: 1500px;
+                background: #FFFFFF;
+                border-radius: 60px;
+                padding: 40px;
                 display: flex;
-                flex-direction: column;
-                align-items: center;
-                padding: 86px 210px;
+                gap: 40px;
+                flex-wrap: wrap;
             }
             .showcase-image {
-                width: 1500px;
-                height: 844px;
-                background: #CCCCCC;
-                border-radius: 40px;
-                margin-bottom: 48px;
-            }
-            .showcase-text {
-                width: 1500px;
-                text-align: center;
-                padding: 0 210px 86px 210px;
-            }
-            .showcase-title {
-                font-family: 'Raleway', sans-serif;
-                font-size: 55px;
-                font-weight: 700;
-                color: #FFFFFF;
-                margin: 0;
-                margin-bottom: 16px;
-            }
-            .showcase-description {
-                font-family: 'Inter', sans-serif;
-                font-size: 35px;
-                font-weight: 500;
-                color: #FFFFFF;
-                margin: 0;
-                line-height: 1.3;
-            }
-        }
-
-        /*(1200px – 1919px)*/
-        @media (min-width: 1200px) and (max-width: 1919px) {
-            .site {
-                max-width: 1920px;
-                margin: 0 auto;
-                grid-template-rows: 200px auto 200px;
-                width: 100%;
-            }
-            .main {
-                grid-row: 2;
-                display: grid;
-                grid-template-rows: auto auto auto;
-            }
-            .auth-section {
-                display: flex;
-                flex-direction: row;
-                justify-content: space-between;
-                align-items: center;
-                padding: 58.5px 5% 58.5px 0;
-                gap: 5%;
-                width: 100%;
-            }
-            .auth-welcome {
-                width: 50%;
-                max-width: 960px;
-                background: #FFFFFF;
-                border-radius: 0 150px 150px 0;
-                position: relative;
-                box-shadow: 0 7px 5px rgba(0, 15, 153, 0.2);
-                display: flex;
-                flex-direction: column;
-                justify-content: center;
-                align-items: center;
-                padding: 5%;
-                aspect-ratio: 960 / 1080;
-            }
-            .welcome-login, .welcome-register {
-                width: 100%;
-                display: flex;
-                flex-direction: column;
-                align-items: center;
-            }
-            .welcome-title {
-                font-family: 'Days One', sans-serif;
-                font-size: 40px;
-                font-weight: 400;
-                color: #000F99;
-                line-height: 1.2;
-                text-align: center;
-                margin-bottom: 20px;
-            }
-            .no-account {
-                font-family: 'Questrial', sans-serif;
-                font-size: 20px;
-                color: #3D3E45;
-                text-align: center;
-                margin-bottom: 30px;
-            }
-            .register-btn {
-                font-family: 'Raleway', sans-serif;
-                font-size: 28px;
-                font-weight: 600;
-                color: #FFFFFF;
-                background: #000F99;
-                border: none;
-                border-radius: 20px;
-                width: 80%;
-                max-width: 464px;
-                padding: 15px 0;
-                margin: 0 auto;
-                cursor: pointer;
-                text-align: center;
-                line-height: 1;
-                transition: all 0.3s ease;
-            }
-            .auth-form {
-                width: 40%;
-                max-width: 400px;
-                background: #FFFFFF;
-                border-radius: 90px;
-                position: relative;
-                padding: 5%;
-                display: flex;
-                flex-direction: column;
-                justify-content: space-between;
-                aspect-ratio: 665 / 936;
-            }
-            .login-title {
-                font-family: 'Days One', sans-serif;
-                font-size: 36px;
-                font-weight: 400;
-                color: #000F99;
-                text-align: center;
-                margin-bottom: 30px;
-            }
-            .input-field {
-                position: relative;
-                width: 100%;
-                background: #E4E2E2;
-                margin-bottom: 30px;
-                aspect-ratio: 454 / 106;
-            }
-            .field-input {
-                font-size: 18px;
-            }
-            .icon-placeholder {
-                width: 10%;
-                aspect-ratio: 1 / 1;
-                top: 50%;
-                transform: translateY(-50%);
-                background-size: cover;
-            }
-            .mail-icon {
-                right: 33px;
-                left: auto;
-            }
-            .lock-icon {
-                right: 33px;
-                left: auto;
-            }
-            .name-icon {
-                right: 33px;
-                left: auto;
-                top: 50%;
-                transform: translateY(-50%);
-            }
-            .options-row {
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                gap: 20px;
-                margin-bottom: 30px;
-            }
-            .forgot-link, .remember-text {
-                font-family: 'Questrial', sans-serif;
-                font-size: 18px;
-                color: #3D3E45;
-                text-decoration: none;
-            }
-            .custom-checkbox {
-                display: inline-block;
-                position: relative;
-                cursor: pointer;
-                flex-shrink: 0;
-            }
-
-            .checkmark {
-                display: inline-block;
-                width: 24px;
-                height: 24px;
-                border-radius: 50%;
-                border: 3px solid #000F99;
-                background: transparent;
-                transition: all 0.2s ease-in-out;
-            }
-            .login-btn {
-                font-family: 'Raleway', sans-serif;
-                font-size: 24px;
-                font-weight: 500;
-                color: #FFFFFF;
-                background: #000F99;
-                border: none;
-                border-radius: 20px;
-                width: 100%;
-                aspect-ratio: 454 / 106;
-                cursor: pointer;
-                text-align: center;
-                transition: all 0.3s ease;
-            }
-            .features-section {
-                width: 100%;
-                padding: 40px 0;
-                overflow-x: auto;
-                scrollbar-width: none;
-                cursor: grab;
-            }
-            .features-section::-webkit-scrollbar {
                 display: none;
             }
-            .features-list {
-                display: flex;
-                flex-direction: row;
-                gap: 30px;
-                list-style: none;
-                padding: 0 50px;
-                margin: 0;
-            }
-            .feature-item {
-                flex-shrink: 0;
-                width: 70vw;
-                max-width: 350px;
-                display: flex;
-                flex-direction: column;
-            }
-            .feature-card {
-                background: #FFFFFF;
-                border-radius: 30px;
-            }
-            .card-image {
-                width: 100%;
-                aspect-ratio: 600 / 800;
-                background: #CCCCCC;
-                border-radius: 30px;
-            }
-            .card-text {
-                margin-top: 40px;
-                width: 100%;
-            }
-            .card-title {
-                font-family: 'Raleway', sans-serif;
-                font-size: 32px;
-                font-weight: 600;
-                color: #FFFFFF;
-            }
-            .card-description {
-                font-family: 'Instrument Sans', sans-serif;
-                font-size: 24px;
-                font-weight: 400;
-                color: #FFFFFF;
-                line-height: 1.3;
-            }
-            .showcase-section {
-                width: 100%;
-                display: flex;
-                justify-content: center;
-                align-items: center;
-            }
-            .showcase-group {
-                width: 100%;
-                display: flex;
-                flex-direction: column;
-                align-items: center;
-                padding: 86px 10%;
-            }
-            .showcase-image {
-                width: 100%;
-                max-width: 1500px;
-                aspect-ratio: 1500 / 844;
-                background: #CCCCCC;
-                border-radius: 40px;
-                margin-bottom: 48px;
-            }
             .showcase-text {
-                width: 100%;
-                max-width: 1500px;
-                text-align: center;
-                padding: 0;
-            }
-            .showcase-title {
-                font-family: 'Raleway', sans-serif;
-                font-size: 32px;
-                font-weight: 700;
-                color: #FFFFFF;
-                margin-bottom: 16px;
-            }
-            .showcase-description {
-                font-family: 'Inter', sans-serif;
-                font-size: 22px;
-                font-weight: 500;
-                color: #FFFFFF;
-                line-height: 1.3;
+                display: none;
             }
         }
-        /* ========== 3. ПЛАНШЕТ (до 1200px) ========== */
+
+        /* === КОМПАКТНАЯ ВЕРСИЯ (1200px – 1919px) === */
+        @media (min-width: 1200px) and (max-width: 1919px) {
+            .site { max-width: 1920px; margin: 0 auto; grid-template-rows: 200px auto 200px; width: 100%; }
+            .main { grid-row: 2; display: grid; grid-template-rows: auto auto auto; }
+            .auth-section { display: flex; flex-direction: row; justify-content: space-between; align-items: center; padding: 58.5px 5% 58.5px 0; gap: 5%; width: 100%; }
+            .auth-welcome { width: 50%; max-width: 960px; background: #FFFFFF; border-radius: 0 150px 150px 0; position: relative; box-shadow: 0 7px 5px rgba(0, 15, 153, 0.2); display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 5%; aspect-ratio: 960 / 1080; }
+            .welcome-login, .welcome-register { width: 100%; display: flex; flex-direction: column; align-items: center; }
+            .welcome-title { font-family: 'Days One', sans-serif; font-size: 40px; font-weight: 400; color: #000F99; line-height: 1.2; text-align: center; margin-bottom: 20px; }
+            .no-account { font-family: 'Questrial', sans-serif; font-size: 20px; color: #3D3E45; text-align: center; margin-bottom: 30px; }
+            .register-btn { font-family: 'Raleway', sans-serif; font-size: 28px; font-weight: 600; color: #FFFFFF; background: #000F99; border: none; border-radius: 20px; width: 80%; max-width: 464px; padding: 15px 0; margin: 0 auto; cursor: pointer; text-align: center; line-height: 1; transition: all 0.3s ease; }
+            .auth-form { width: 40%; max-width: 400px; background: #FFFFFF; border-radius: 90px; position: relative; padding: 5%; display: flex; flex-direction: column; justify-content: space-between; aspect-ratio: 665 / 936; }
+            .login-title { font-family: 'Days One', sans-serif; font-size: 36px; font-weight: 400; color: #000F99; text-align: center; margin-bottom: 30px; }
+            .input-field { position: relative; width: 100%; background: #E4E2E2; margin-bottom: 30px; aspect-ratio: 454 / 106; }
+            .field-input { font-size: 18px; }
+            .icon-placeholder { width: 10%; aspect-ratio: 1 / 1; top: 50%; transform: translateY(-50%); background-size: cover; }
+            .mail-icon { right: 33px; left: auto; }
+            .lock-icon { right: 33px; left: auto; }
+            .name-icon { right: 33px; left: auto; top: 50%; transform: translateY(-50%); }
+            .options-row { display: flex; align-items: center; justify-content: center; gap: 20px; margin-bottom: 30px; }
+            .forgot-link, .remember-text { font-family: 'Questrial', sans-serif; font-size: 18px; color: #3D3E45; text-decoration: none; }
+            .custom-checkbox { display: inline-block; position: relative; cursor: pointer; flex-shrink: 0; }
+            .checkmark { display: inline-block; width: 24px; height: 24px; border-radius: 50%; border: 3px solid #000F99; background: transparent; transition: all 0.2s ease-in-out; }
+            .login-btn { font-family: 'Raleway', sans-serif; font-size: 24px; font-weight: 500; color: #FFFFFF; background: #000F99; border: none; border-radius: 20px; width: 100%; aspect-ratio: 454 / 106; cursor: pointer; text-align: center; transition: all 0.3s ease; }
+            .features-section { width: 100%; padding: 40px 0; overflow-x: auto; scrollbar-width: none; cursor: grab; }
+            .features-section::-webkit-scrollbar { display: none; }
+            .features-list { display: flex; flex-direction: row; gap: 30px; list-style: none; padding: 0 50px; margin: 0; }
+            .feature-item { flex-shrink: 0; width: 70vw; max-width: 350px; display: flex; flex-direction: column; }
+            .feature-card { background: #FFFFFF; border-radius: 30px; height: 100%; }
+            .card-image { width: 100%; aspect-ratio: 600 / 800; background: #FFFFFF; border-radius: 30px; }
+            .card-text { display: none; }
+            .showcase-section { width: 100%; padding: 20px; }
+            .showcase-group { background: #FFFFFF; border-radius: 40px; padding: 30px; display: flex; flex-direction: column; gap: 30px; }
+            .showcase-image { display: none; }
+            .showcase-text { display: none; }
+        }
+
+        /* === ПЛАНШЕТ (до 1200px) === */
         @media (max-width: 1199px) {
             .site { grid-template-rows: 70px auto 70px; min-height: 100vh; }
             .main { grid-row: 2; display: flex; flex-direction: column; }
@@ -759,29 +600,24 @@
             .features-section { width: 100%; padding: 30px 0; overflow-x: auto; scrollbar-width: thin; }
             .features-list { display: flex; flex-direction: row; gap: 20px; padding: 15px 10% 30px 10%; margin: 0; }
             .feature-item { flex-shrink: 0; width: 60vw; max-width: 500px; display: flex; flex-direction: column; }
-            .feature-card { background: #FFFFFF; border-radius: 30px; }
-            .card-image { width: 100%; aspect-ratio: 550 / 732; background: #CCCCCC; border-radius: 30px; }
-            .card-text { margin-top: 25px; width: 100%; }
-            .card-title { font-family: 'Raleway', sans-serif; font-size: 24px; font-weight: 600; color: #FFFFFF; }
-            .card-description { font-family: 'Instrument Sans', sans-serif; font-size: 18px; font-weight: 400; color: #FFFFFF; line-height: 1.3; }
-            .showcase-section { width: 100%; padding: 40px 20px; }
-            .showcase-group { width: 100%; display: flex; flex-direction: column; align-items: center; padding: 0; }
-            .showcase-image { width: 100%; height: auto; aspect-ratio: 1500 / 844; background: #CCCCCC; border-radius: 40px; margin-bottom: 30px; }
-            .showcase-text { width: 100%; text-align: center; padding: 0; }
-            .showcase-title { font-family: 'Raleway', sans-serif; font-size: 36px; font-weight: 700; color: #FFFFFF; margin-bottom: 16px; }
-            .showcase-description { font-family: 'Inter', sans-serif; font-size: 24px; font-weight: 500; color: #FFFFFF; line-height: 1.3; }
+            .feature-card { background: #FFFFFF; border-radius: 30px; height: 100%; }
+            .card-image { width: 100%; aspect-ratio: 550 / 732; background: #FFFFFF; border-radius: 30px; }
+            .card-text { display: none; }
+            .showcase-section { width: 100%; padding: 20px; }
+            .showcase-group { background: #FFFFFF; border-radius: 30px; padding: 20px; display: flex; flex-direction: column; gap: 20px; }
+            .showcase-image { display: none; }
+            .showcase-text { display: none; }
         }
 
         /* === 768px И НИЖЕ === */
         @media (max-width: 768px) {
             .feature-item { width: 80vw; max-width: 400px; }
-            .card-title { font-size: 22px; }
-            .card-description { font-size: 16px; }
-            .showcase-title { font-size: 28px; }
-            .showcase-description { font-size: 20px; }
+            .card-image .task-item-small { font-size: 12px; }
+            .card-image div[style*="font-size: 26px"] { font-size: 20px !important; }
+            .showcase-group { padding: 20px !important; }
         }
 
-        /* === ТЕЛЕФОН (375px и меньше) === */
+        /* === ТЕЛЕФОН === */
         @media (max-width: 375px) {
             .site { grid-template-rows: 35px auto 35px; min-height: auto; }
             .main { grid-row: 2; display: flex; flex-direction: column; }
@@ -797,11 +633,10 @@
             .login-btn { font-size: 22px; line-height: normal; }
             .card-title { font-size: 20px; }
             .card-description { font-size: 16px; }
-            .showcase-title { font-size: 24px; }
-            .showcase-description { font-size: 18px; }
+            .showcase-group { padding: 15px !important; }
         }
 
-        /* === СТИЛИ ДЛЯ ШАПКИ И ПОДВАЛА === */
+        /* === ШАПКА И ПОДВАЛ === */
         .header {
             grid-row: 1;
             display: flex;
@@ -838,7 +673,7 @@
             .footer { font-size: 12px; padding: 15px; }
         }
 
-        /* === ОБЩИЙ ЭФФЕКТ ДЛЯ КНОПОК === */
+        /* === КНОПКИ === */
         .register-btn:hover, .login-btn:hover, .logout-btn:hover, .add-task-btn:hover {
             background: linear-gradient(135deg, #FF6B6B, #4A90E2) !important;
             box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
@@ -849,7 +684,6 @@
         }
 
         /* === ДОПОЛНИТЕЛЬНЫЕ СТИЛИ === */
-                /* === ДОПОЛНИТЕЛЬНЫЕ СТИЛИ === */
         .form-container {
             transition: opacity 0.3s ease, transform 0.3s ease;
             width: 100%;
@@ -868,18 +702,16 @@
             justify-content: flex-start;
             gap: 15px;
         }
-        /* Серые прямоугольники для полей ввода */
         .input-field {
             position: relative;
-            background: #E4E2E2;  /* серый фон */
+            background: #E4E2E2;
             border: none;
             overflow: hidden;
         }
-        /* Текст внутри полей (прозрачный фон) */
         .field-input {
             width: 75%;
             height: 100%;
-            background: transparent !important;  /* прозрачный фон */
+            background: transparent !important;
             border: none !important;
             outline: none !important;
             box-shadow: none !important;
@@ -891,29 +723,23 @@
             color: #3D3E45;
             opacity: 0.7;
         }
-        /* Иконки внутри полей */
         .icon-placeholder {
             position: absolute;
         }
-        /* Анимация при наведении */
+
+        /* === АНИМАЦИЯ ЧЕКБОКСОВ === */
         .custom-checkbox:hover .checkmark {
             transform: scale(1.05);
             border-color: #4A90E2;
         }
-
-        /* Анимация при нажатии (активном состоянии) */
         .custom-checkbox:active .checkmark {
             transform: scale(0.95);
         }
-
-        /* Стиль для выбранного чекбокса */
         .custom-checkbox input:checked + .checkmark {
             background-color: #000F99;
             border-color: #000F99;
             animation: checkboxPop 0.3s ease-in-out;
         }
-
-        /* Анимация появления галочки */
         .custom-checkbox input:checked + .checkmark::after {
             content: "✓";
             position: absolute;
@@ -924,44 +750,22 @@
             transform: translate(-50%, -50%);
             animation: checkmarkAppear 0.2s ease-in-out;
         }
-
-        /* Ключевые кадры анимации */
         @keyframes checkboxPop {
-            0% {
-                transform: scale(1);
-            }
-            50% {
-                transform: scale(1.2);
-            }
-            100% {
-                transform: scale(1);
-            }
+            0% { transform: scale(1); }
+            50% { transform: scale(1.2); }
+            100% { transform: scale(1); }
+        }
+        @keyframes checkmarkAppear {
+            0% { opacity: 0; transform: translate(-50%, -50%) scale(0.5); }
+            100% { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+        }
+        @media (max-width: 1199px) {
+            .field-input { font-size: 24px; padding-left: 18px; }
+        }
+        @media (max-width: 375px) {
+            .field-input { font-size: 20px; padding-left: 15px; }
         }
 
-        @keyframes checkmarkAppear {
-            0% {
-                opacity: 0;
-                transform: translate(-50%, -50%) scale(0.5);
-            }
-            100% {
-                opacity: 1;
-                transform: translate(-50%, -50%) scale(1);
-            }
-        }
-        /* адаптация для планшета */
-        @media (max-width: 1199px) {
-            .field-input {
-                font-size: 24px;
-                padding-left: 18px;
-            }
-        }
-        /* адаптация для телефона */
-        @media (max-width: 375px) {
-            .field-input {
-                font-size: 20px;
-                padding-left: 15px;
-            }
-        }
         /* === СТИЛИ ДЛЯ СЕКЦИИ ЗАДАЧ === */
         .tasks-wrapper {
             background: rgba(255,255,255,0.1);
@@ -981,7 +785,7 @@
         }
         .tasks-title {
             font-family: 'Days One', sans-serif;
-            font-size: 48px;
+            font-size: 38px;
             color: white;
         }
         .logout-btn {
@@ -1064,9 +868,7 @@
             font-size: 20px;
             transition: all 0.2s ease;
         }
-        .task-actions button:hover {
-            transform: scale(1.05);
-        }
+        .task-actions button:hover { transform: scale(1.05); }
         .complete-btn { background: #81c784; color: white; }
         .delete-btn { background: #e57373; color: white; }
         @media (max-width: 768px) {
@@ -1075,6 +877,78 @@
             .task-title { font-size: 20px; }
             .add-task-form input, .add-task-form select { font-size: 14px; }
             .logout-btn, .add-task-btn { font-size: 16px; padding: 10px 20px; }
+        }
+
+        /* === СТИЛИ ДЛЯ СПИСКОВ В КАРТОЧКАХ === */
+        .card-image .task-item-small {
+            background: rgba(255,255,255,0.95);
+            border-radius: 12px;
+            padding: 10px 14px;
+            margin-bottom: 8px;
+            font-family: 'Questrial', sans-serif;
+            font-size: 16px;
+            color: #3D3E45;
+            cursor: default;
+            transition: all 0.2s ease;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-left: 4px solid #4CAF50;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+        }
+        .card-image .task-item-small .task-title-text {
+            flex: 1;
+            margin-right: 8px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            cursor: pointer;
+        }
+        .card-image .task-item-small .task-title-text:hover {
+            text-decoration: underline;
+        }
+        .card-image .task-item-small .delete-btn-small {
+            background: none;
+            border: none;
+            color: #e57373;
+            font-size: 18px;
+            cursor: pointer;
+            padding: 0 0 0 12px;
+            transition: transform 0.2s;
+            line-height: 1;
+        }
+        .card-image .task-item-small .delete-btn-small:hover {
+            transform: scale(1.2);
+            color: #d32f2f;
+        }
+        .card-image .task-item-small.done {
+            border-left-color: #4CAF50;
+        }
+        .card-image .task-item-small.active {
+            border-left-color: #FF6B6B;
+        }
+        .card-image .task-item-small .priority-tag {
+            font-size: 11px;
+            padding: 2px 8px;
+            border-radius: 12px;
+            color: white;
+            margin-left: 8px;
+        }
+        .card-image .task-item-small .priority-tag.high { background: #FF6B6B; }
+        .card-image .task-item-small .priority-tag.medium { background: #FFB74D; }
+        .card-image .task-item-small .priority-tag.low { background: #64B5F6; }
+        .task-card .due-display {
+            font-family: 'Questrial', sans-serif;
+            font-size: 14px;
+            color: #888;
+            font-style: italic;
+        }
+        .card-image .task-item-small .due-display {
+            font-family: 'Questrial', sans-serif;
+            font-size: 14px;
+            color: #888;
+            font-style: italic;
+            margin-right: 4px;
         }
     </style>
 
@@ -1094,6 +968,24 @@
         });
 
         let currentUserId = null;
+        let localTasks = {};
+        let currentEditingTaskId = null;
+        let currentEditingTaskIsDone = false;
+        let allUserTasks = [];
+
+        function loadLocalTasks() {
+            const stored = localStorage.getItem('sprintum_local_tasks');
+            if (stored) {
+                try {
+                    localTasks = JSON.parse(stored);
+                } catch(e) { localTasks = {}; }
+            } else {
+                localTasks = {};
+            }
+        }
+        function saveLocalTasks() {
+            localStorage.setItem('sprintum_local_tasks', JSON.stringify(localTasks));
+        }
 
         function showMessage(text, isError = false) {
             const msg = document.createElement('div');
@@ -1134,6 +1026,7 @@
                 showMessage(`Добро пожаловать, ${username}!`);
                 document.getElementById('authSection').style.display = 'none';
                 document.getElementById('tasksSection').style.display = 'block';
+                loadLocalTasks();
                 loadTasks();
             } catch (error) {
                 showMessage(error.message, true);
@@ -1172,32 +1065,266 @@
                 const response = await fetch('/tasks');
                 const tasks = await response.json();
                 const userTasks = tasks.filter(t => t.user_id === currentUserId);
-                const container = document.getElementById('tasksList');
-                if (!container) return;
-                container.innerHTML = '';
-                if (userTasks.length === 0) {
-                    container.innerHTML = '<p style="text-align:center; color:white;">Задач пока нет</p>';
-                    return;
-                }
+                allUserTasks = userTasks;
+                
                 userTasks.forEach(task => {
-                    const priorityText = task.priority === 'high' ? 'Высокий' : task.priority === 'medium' ? 'Средний' : 'Низкий';
-                    const priorityClass = task.priority === 'high' ? '#e57373' : task.priority === 'medium' ? '#ffb74d' : '#64b5f6';
-                    const taskDiv = document.createElement('div');
-                    taskDiv.className = 'task-card';
-                    taskDiv.innerHTML = `
-                        <div class="task-info">
-                            <div class="task-title">${escapeHtml(task.title)}</div>
-                            <div class="task-priority" style="background: ${priorityClass};">${priorityText}</div>
-                        </div>
-                        <div class="task-actions">
-                            ${task.status !== 'done' ? `<button class="complete-btn" onclick="updateTask(${task.id})">✓</button>` : ''}
-                            <button class="delete-btn" onclick="deleteTask(${task.id})">✕</button>
-                        </div>
-                    `;
-                    container.appendChild(taskDiv);
+                    if (localTasks[task.id]) {
+                        task.description = localTasks[task.id].description || '';
+                        task.due_date = localTasks[task.id].due_date || '';
+                        task.priority = localTasks[task.id].priority || task.priority;
+                    } else {
+                        task.description = '';
+                        task.due_date = '';
+                    }
                 });
+
+                const priorityOrder = { 'high': 1, 'medium': 2, 'low': 3 };
+                const activeTasks = userTasks.filter(t => t.status !== 'done');
+                const doneTasks = userTasks.filter(t => t.status === 'done');
+
+                activeTasks.sort((a, b) => priorityOrder[a.priority] - priorityOrder[b.priority]);
+                const container = document.getElementById('tasksList');
+                container.innerHTML = '';
+                if (activeTasks.length === 0) {
+                    container.innerHTML = '<p style="text-align:center; color:white;">Нет активных задач</p>';
+                } else {
+                    activeTasks.forEach(task => {
+                        const priorityText = task.priority === 'high' ? 'Высокий' : task.priority === 'medium' ? 'Средний' : 'Низкий';
+                        const priorityClass = task.priority === 'high' ? '#e57373' : task.priority === 'medium' ? '#ffb74d' : '#64b5f6';
+                        const dueDisplay = task.due_date ? task.due_date : 'бессрок';
+                        const taskDiv = document.createElement('div');
+                        taskDiv.className = 'task-card';
+                        taskDiv.innerHTML = `
+                            <div class="task-info">
+                                <div class="task-title">${escapeHtml(task.title)}</div>
+                                <div class="task-priority" style="background: ${priorityClass};">${priorityText}</div>
+                                <div class="due-display">${dueDisplay}</div>
+                            </div>
+                            <div class="task-actions">
+                                <button class="complete-btn" onclick="updateTask(${task.id})">✓</button>
+                                <button class="delete-btn" onclick="deleteTask(${task.id})">✕</button>
+                            </div>
+                        `;
+                        container.appendChild(taskDiv);
+                    });
+                }
+
+                updateStatsAndCharts(activeTasks, doneTasks);
             } catch(e) { console.error(e); }
         }
+
+        // Обновление статистики
+        function updateStatsAndCharts(activeTasks, doneTasks) {
+            const highCount = activeTasks.filter(t => t.priority === 'high').length;
+            const mediumCount = activeTasks.filter(t => t.priority === 'medium').length;
+            const lowCount = activeTasks.filter(t => t.priority === 'low').length;
+            const totalActive = activeTasks.length;
+            const maxCount = Math.max(highCount, mediumCount, lowCount, 1);
+            const maxHeight = 275;
+
+            const highPercent = totalActive > 0 ? Math.round((highCount / totalActive) * 100) : 0;
+            const mediumPercent = totalActive > 0 ? Math.round((mediumCount / totalActive) * 100) : 0;
+            const lowPercent = totalActive > 0 ? Math.round((lowCount / totalActive) * 100) : 0;
+
+            document.getElementById('highBar').style.height = (highCount / maxCount * maxHeight) + 'px';
+            document.getElementById('mediumBar').style.height = (mediumCount / maxCount * maxHeight) + 'px';
+            document.getElementById('lowBar').style.height = (lowCount / maxCount * maxHeight) + 'px';
+            document.getElementById('highPercent').textContent = highPercent + '%';
+            document.getElementById('mediumPercent').textContent = mediumPercent + '%';
+            document.getElementById('lowPercent').textContent = lowPercent + '%';
+
+            // Списки в карточках
+            const doneContainer = document.getElementById('doneTasksList');
+            doneContainer.innerHTML = '';
+            if (doneTasks.length === 0) {
+                doneContainer.innerHTML = '<span style="font-size:16px; color:#888;">Нет выполненных задач</span>';
+            } else {
+                doneTasks.forEach(task => {
+                    const item = createTaskItem(task, 'done');
+                    doneContainer.appendChild(item);
+                });
+            }
+
+            const activeContainer = document.getElementById('activeTasksList');
+            activeContainer.innerHTML = '';
+            if (activeTasks.length === 0) {
+                activeContainer.innerHTML = '<span style="font-size:16px; color:#888;">Нет активных задач</span>';
+            } else {
+                activeTasks.forEach(task => {
+                    const item = createTaskItem(task, 'active');
+                    activeContainer.appendChild(item);
+                });
+            }
+
+            // Большая карточка
+            const totalAll = activeTasks.length + doneTasks.length;
+            const doneTotal = doneTasks.length;
+            const activeTotal = activeTasks.length;
+            const donePercentAll = totalAll > 0 ? Math.round((doneTotal / totalAll) * 100) : 0;
+            const activePercentAll = totalAll > 0 ? Math.round((activeTotal / totalAll) * 100) : 0;
+
+            document.getElementById('bigTotalCount').textContent = totalAll;
+            document.getElementById('bigDoneCount').textContent = doneTotal;
+            document.getElementById('bigActiveCount').textContent = activeTotal;
+            document.getElementById('bigDonePercent').textContent = donePercentAll + '%';
+            document.getElementById('bigDonePercentLabel').textContent = donePercentAll + '%';
+            document.getElementById('bigActivePercentLabel').textContent = activePercentAll + '%';
+            document.getElementById('bigDoneBar').style.width = donePercentAll + '%';
+            document.getElementById('bigActiveBar').style.width = activePercentAll + '%';
+            document.getElementById('bigHighCount').textContent = highCount;
+            document.getElementById('bigMediumCount').textContent = mediumCount;
+            document.getElementById('bigLowCount').textContent = lowCount;
+
+            const circumference = 314;
+            const doneCirc = totalAll > 0 ? (doneTotal / totalAll) * circumference : 0;
+            const activeCirc = totalAll > 0 ? (activeTotal / totalAll) * circumference : 0;
+            const doneCircle = document.getElementById('bigDoneCircle');
+            const activeCircle = document.getElementById('bigActiveCircle');
+            if (doneCircle) {
+                doneCircle.setAttribute('stroke-dasharray', `${doneCirc} ${circumference}`);
+                doneCircle.setAttribute('stroke', '#4CAF50');
+            }
+            if (activeCircle) {
+                activeCircle.setAttribute('stroke-dasharray', `${activeCirc} ${circumference}`);
+                activeCircle.setAttribute('stroke', '#FF6B6B');
+            }
+        }
+
+        // Создание элемента задачи для карточки
+        function createTaskItem(task, type) {
+            const div = document.createElement('div');
+            div.className = `task-item-small ${type}`;
+            const priorityText = task.priority === 'high' ? 'Выс' : task.priority === 'medium' ? 'Ср' : 'Низ';
+            const dueDisplay = task.due_date ? task.due_date : 'бессрок';
+            div.innerHTML = `
+                <span class="task-title-text" onclick="openTaskModalById(${task.id})">${escapeHtml(task.title)}</span>
+                <span style="display: flex; align-items: center; gap: 8px;">
+                    <span class="due-display">${dueDisplay}</span>
+                    <span class="priority-tag ${task.priority}">${priorityText}</span>
+                    <button class="delete-btn-small" onclick="event.stopPropagation(); deleteTask(${task.id})">✕</button>
+                </span>
+            `;
+            return div;
+        }
+
+        window.openTaskModalById = function(id) {
+            const task = allUserTasks.find(t => t.id === id);
+            if (task) {
+                openTaskModal(task);
+            } else {
+                showMessage('Задача не найдена', true);
+            }
+        };
+
+        function openTaskModal(task) {
+            currentEditingTaskId = task.id;
+            currentEditingTaskIsDone = task.status === 'done';
+            document.getElementById('modalTitle').textContent = task.title;
+            document.getElementById('modalDescriptionInput').value = task.description || '';
+            document.getElementById('modalDueDateInput').value = task.due_date || '';
+            const priorityMap = { 'high': 'Высокий', 'medium': 'Средний', 'low': 'Низкий' };
+            document.getElementById('modalPriorityDisplay').textContent = `Приоритет: ${priorityMap[task.priority] || 'Средний'}`;
+            document.getElementById('modalPriorityInput').value = task.priority || 'medium';
+
+            if (currentEditingTaskIsDone) {
+                document.getElementById('modalDescriptionInput').disabled = false;
+                document.getElementById('modalDueDateInput').disabled = true;
+                document.getElementById('modalPriorityInput').style.display = 'none';
+                document.getElementById('modalPriorityDisplay').style.display = 'block';
+                document.getElementById('modalSaveBtn').style.display = 'block';
+            } else {
+                document.getElementById('modalDescriptionInput').disabled = false;
+                document.getElementById('modalDueDateInput').disabled = false;
+                document.getElementById('modalPriorityInput').style.display = 'block';
+                document.getElementById('modalPriorityDisplay').style.display = 'none';
+                document.getElementById('modalSaveBtn').style.display = 'block';
+            }
+
+            document.getElementById('taskModal').style.display = 'flex';
+        }
+
+        function closeModal() {
+            document.getElementById('taskModal').style.display = 'none';
+            currentEditingTaskId = null;
+            currentEditingTaskIsDone = false;
+        }
+        document.getElementById('taskModal').addEventListener('click', function(e) {
+            if (e.target === this) closeModal();
+        });
+
+        window.saveTaskDetails = function() {
+            if (currentEditingTaskId === null) return;
+            const description = document.getElementById('modalDescriptionInput').value.trim();
+            const due_date = document.getElementById('modalDueDateInput').value;
+            const priority = document.getElementById('modalPriorityInput').value;
+            if (!localTasks[currentEditingTaskId]) localTasks[currentEditingTaskId] = {};
+            localTasks[currentEditingTaskId].description = description;
+            if (!currentEditingTaskIsDone) {
+                localTasks[currentEditingTaskId].due_date = due_date;
+                localTasks[currentEditingTaskId].priority = priority;
+            }
+            saveLocalTasks();
+            closeModal();
+            loadTasks();
+            showMessage('Изменения сохранены');
+        };
+
+        window.createTask = async function() {
+            const title = document.getElementById('taskTitle').value.trim();
+            const priority = document.getElementById('taskPriority').value;
+            const description = document.getElementById('taskDescription').value.trim();
+            const due_date = document.getElementById('taskDueDate').value;
+            if (!title) return showMessage('Введите задачу', true);
+            try {
+                const response = await fetch('/tasks', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ user_id: currentUserId, title, priority })
+                });
+                if (!response.ok) throw new Error('Ошибка создания');
+                const tasksRes = await fetch('/tasks');
+                const allTasks = await tasksRes.json();
+                const userTasks = allTasks.filter(t => t.user_id === currentUserId);
+                const newTask = userTasks.reduce((a, b) => a.id > b.id ? a : b);
+                localTasks[newTask.id] = { description, due_date };
+                saveLocalTasks();
+                document.getElementById('taskTitle').value = '';
+                document.getElementById('taskDescription').value = '';
+                document.getElementById('taskDueDate').value = '';
+                loadTasks();
+                showMessage('Задача добавлена');
+            } catch(e) { showMessage('Ошибка создания', true); }
+        };
+
+        window.updateTask = async function(id) {
+            try {
+                await fetch(`/tasks/${id}?new_status=done`, { method: 'PATCH' });
+                loadTasks();
+                showMessage('Задача выполнена!');
+            } catch(e) { showMessage('Ошибка', true); }
+        };
+
+        window.deleteTask = async function(id) {
+            if (!confirm('Удалить задачу?')) return;
+            try {
+                await fetch(`/tasks/${id}`, { method: 'DELETE' });
+                delete localTasks[id];
+                saveLocalTasks();
+                loadTasks();
+                showMessage('Задача удалена');
+            } catch(e) { showMessage('Ошибка удаления', true); }
+        };
+
+        window.logout = function() {
+            currentUserId = null;
+            document.getElementById('authSection').style.display = 'flex';
+            document.getElementById('tasksSection').style.display = 'none';
+            document.getElementById('loginEmail').value = '';
+            document.getElementById('loginPassword').value = '';
+            document.getElementById('regEmail').value = '';
+            document.getElementById('regPassword').value = '';
+            closeModal();
+        };
 
         function escapeHtml(str) {
             return str.replace(/[&<>]/g, function(m) {
@@ -1208,52 +1335,9 @@
             });
         }
 
-        // Создание задачи
-        window.createTask = async function() {
-            const title = document.getElementById('taskTitle').value.trim();
-            const priority = document.getElementById('taskPriority').value;
-            if (!title) return showMessage('Введите задачу', true);
-            try {
-                await fetch('/tasks', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ user_id: currentUserId, title, priority })
-                });
-                document.getElementById('taskTitle').value = '';
-                loadTasks();
-                showMessage('Задача добавлена');
-            } catch(e) { showMessage('Ошибка создания', true); }
-        };
-
-        // Обновление статуса
-        window.updateTask = async function(id) {
-            try {
-                await fetch(`/tasks/${id}?new_status=done`, { method: 'PATCH' });
-                loadTasks();
-                showMessage('Задача выполнена!');
-            } catch(e) { showMessage('Ошибка', true); }
-        };
-
-        // Удаление задачи
-        window.deleteTask = async function(id) {
-            if (!confirm('Удалить задачу?')) return;
-            try {
-                await fetch(`/tasks/${id}`, { method: 'DELETE' });
-                loadTasks();
-                showMessage('Задача удалена');
-            } catch(e) { showMessage('Ошибка удаления', true); }
-        };
-
-        // Выход
-        window.logout = function() {
-            currentUserId = null;
-            document.getElementById('authSection').style.display = 'flex';
-            document.getElementById('tasksSection').style.display = 'none';
-            document.getElementById('loginEmail').value = '';
-            document.getElementById('loginPassword').value = '';
-            document.getElementById('regEmail').value = '';
-            document.getElementById('regPassword').value = '';
-        };
+        document.addEventListener('DOMContentLoaded', function() {
+            loadLocalTasks();
+        });
     </script>
 </body>
 </html>
