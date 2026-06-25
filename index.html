@@ -953,64 +953,77 @@
     </style>
 
     <script>
-        // Переключение между формами
-        document.getElementById('showRegisterBtn').addEventListener('click', () => {
-            document.getElementById('loginForm').style.display = 'none';
-            document.getElementById('registerForm').style.display = 'flex';
-            document.getElementById('welcomeLogin').style.display = 'none';
-            document.getElementById('welcomeRegister').style.display = 'flex';
-        });
-        document.getElementById('showLoginBtn').addEventListener('click', () => {
-            document.getElementById('registerForm').style.display = 'none';
-            document.getElementById('loginForm').style.display = 'flex';
-            document.getElementById('welcomeRegister').style.display = 'none';
-            document.getElementById('welcomeLogin').style.display = 'flex';
-        });
+    // === ПЕРЕКЛЮЧЕНИЕ ФОРМ ===
+    document.getElementById('showRegisterBtn').addEventListener('click', () => {
+        document.getElementById('loginForm').style.display = 'none';
+        document.getElementById('registerForm').style.display = 'flex';
+        document.getElementById('welcomeLogin').style.display = 'none';
+        document.getElementById('welcomeRegister').style.display = 'flex';
+    });
+    document.getElementById('showLoginBtn').addEventListener('click', () => {
+        document.getElementById('registerForm').style.display = 'none';
+        document.getElementById('loginForm').style.display = 'flex';
+        document.getElementById('welcomeRegister').style.display = 'none';
+        document.getElementById('welcomeLogin').style.display = 'flex';
+    });
 
-        let currentUserId = null;
-        let localTasks = {};
-        let currentEditingTaskId = null;
-        let currentEditingTaskIsDone = false;
-        let allUserTasks = [];
+    let currentUserId = null;
+    let allUserTasks = [];
+    let isBackendAvailable = false;
 
-        function loadLocalTasks() {
-            const stored = localStorage.getItem('sprintum_local_tasks');
-            if (stored) {
-                try {
-                    localTasks = JSON.parse(stored);
-                } catch(e) { localTasks = {}; }
+    // === ПРОВЕРКА НАЛИЧИЯ БЭКЕНДА ===
+    async function checkBackend() {
+        try {
+            const response = await fetch('/tasks', { method: 'GET' });
+            if (response.ok) {
+                isBackendAvailable = true;
+                console.log('✅ Бэкенд доступен');
             } else {
-                localTasks = {};
+                isBackendAvailable = false;
+                console.log('ℹ️ Бэкенд не доступен, используем демо-режим');
             }
+        } catch(e) {
+            isBackendAvailable = false;
+            console.log('ℹ️ Бэкенд не доступен, используем демо-режим');
         }
-        function saveLocalTasks() {
-            localStorage.setItem('sprintum_local_tasks', JSON.stringify(localTasks));
+    }
+
+    // === ОБЩАЯ ФУНКЦИЯ ПОКАЗА СООБЩЕНИЙ ===
+    function showMessage(text, isError = false) {
+        const msg = document.createElement('div');
+        msg.textContent = text;
+        msg.style.position = 'fixed';
+        msg.style.bottom = '20px';
+        msg.style.right = '20px';
+        msg.style.backgroundColor = isError ? '#f44336' : '#4CAF50';
+        msg.style.color = 'white';
+        msg.style.padding = '12px 20px';
+        msg.style.borderRadius = '8px';
+        msg.style.zIndex = '9999';
+        msg.style.fontFamily = 'Raleway, sans-serif';
+        document.body.appendChild(msg);
+        setTimeout(() => msg.remove(), 3000);
+    }
+
+    // === ДЕМО-ДАННЫЕ ===
+    let demoTasks = [
+        { id: 1, title: '📌 Создать дизайн', priority: 'high', status: 'todo', description: 'Главный экран', due_date: '' },
+        { id: 2, title: '📝 Написать код', priority: 'medium', status: 'todo', description: 'Фронтенд', due_date: '2025-06-30' },
+        { id: 3, title: '🧪 Протестировать', priority: 'low', status: 'done', description: 'Всё проверить', due_date: '' }
+    ];
+    let demoIdCounter = 4;
+
+    // === ВХОД ===
+    window.doLogin = async function() {
+        const username = document.getElementById('loginEmail').value.trim();
+        const password = document.getElementById('loginPassword').value;
+        if (!username || !password) {
+            showMessage('Заполните email и пароль', true);
+            return;
         }
 
-        function showMessage(text, isError = false) {
-            const msg = document.createElement('div');
-            msg.textContent = text;
-            msg.style.position = 'fixed';
-            msg.style.bottom = '20px';
-            msg.style.right = '20px';
-            msg.style.backgroundColor = isError ? '#f44336' : '#4CAF50';
-            msg.style.color = 'white';
-            msg.style.padding = '12px 20px';
-            msg.style.borderRadius = '8px';
-            msg.style.zIndex = '9999';
-            msg.style.fontFamily = 'Raleway, sans-serif';
-            document.body.appendChild(msg);
-            setTimeout(() => msg.remove(), 3000);
-        }
-
-        // Вход
-        window.doLogin = async function() {
-            const username = document.getElementById('loginEmail').value.trim();
-            const password = document.getElementById('loginPassword').value;
-            if (!username || !password) {
-                showMessage('Заполните email и пароль', true);
-                return;
-            }
+        // Если бэкенд доступен — используем его
+        if (isBackendAvailable) {
             try {
                 const response = await fetch('/auth/login', {
                     method: 'POST',
@@ -1026,21 +1039,32 @@
                 showMessage(`Добро пожаловать, ${username}!`);
                 document.getElementById('authSection').style.display = 'none';
                 document.getElementById('tasksSection').style.display = 'block';
-                loadLocalTasks();
                 loadTasks();
+                return;
             } catch (error) {
                 showMessage(error.message, true);
-            }
-        };
-
-        // Регистрация
-        window.doRegister = async function() {
-            const username = document.getElementById('regEmail').value.trim();
-            const password = document.getElementById('regPassword').value;
-            if (!username || !password) {
-                showMessage('Заполните email и пароль', true);
                 return;
             }
+        }
+
+        // === ДЕМО-РЕЖИМ ===
+        currentUserId = 1;
+        showMessage(`Демо: добро пожаловать, ${username}!`);
+        document.getElementById('authSection').style.display = 'none';
+        document.getElementById('tasksSection').style.display = 'block';
+        loadTasks();
+    };
+
+    // === РЕГИСТРАЦИЯ ===
+    window.doRegister = async function() {
+        const username = document.getElementById('regEmail').value.trim();
+        const password = document.getElementById('regPassword').value;
+        if (!username || !password) {
+            showMessage('Заполните email и пароль', true);
+            return;
+        }
+
+        if (isBackendAvailable) {
             try {
                 const response = await fetch('/auth/register', {
                     method: 'POST',
@@ -1054,227 +1078,235 @@
                 const data = await response.json();
                 showMessage(data.message || 'Регистрация успешна! Теперь войдите.');
                 document.getElementById('showLoginBtn').click();
+                return;
             } catch (error) {
                 showMessage(error.message, true);
+                return;
             }
-        };
+        }
 
-        // Загрузка задач
-        async function loadTasks() {
+        // === ДЕМО-РЕЖИМ ===
+        showMessage('Демо: регистрация успешна! Теперь войдите.');
+        document.getElementById('showLoginBtn').click();
+    };
+
+    // === ЗАГРУЗКА ЗАДАЧ ===
+    async function loadTasks() {
+        if (isBackendAvailable) {
             try {
                 const response = await fetch('/tasks');
                 const tasks = await response.json();
-                const userTasks = tasks.filter(t => t.user_id === currentUserId);
-                allUserTasks = userTasks;
-                
-                userTasks.forEach(task => {
-                    if (localTasks[task.id]) {
-                        task.description = localTasks[task.id].description || '';
-                        task.due_date = localTasks[task.id].due_date || '';
-                        task.priority = localTasks[task.id].priority || task.priority;
-                    } else {
-                        task.description = '';
-                        task.due_date = '';
-                    }
-                });
-
-                const priorityOrder = { 'high': 1, 'medium': 2, 'low': 3 };
-                const activeTasks = userTasks.filter(t => t.status !== 'done');
-                const doneTasks = userTasks.filter(t => t.status === 'done');
-
-                activeTasks.sort((a, b) => priorityOrder[a.priority] - priorityOrder[b.priority]);
-                const container = document.getElementById('tasksList');
-                container.innerHTML = '';
-                if (activeTasks.length === 0) {
-                    container.innerHTML = '<p style="text-align:center; color:white;">Нет активных задач</p>';
-                } else {
-                    activeTasks.forEach(task => {
-                        const priorityText = task.priority === 'high' ? 'Высокий' : task.priority === 'medium' ? 'Средний' : 'Низкий';
-                        const priorityClass = task.priority === 'high' ? '#e57373' : task.priority === 'medium' ? '#ffb74d' : '#64b5f6';
-                        const dueDisplay = task.due_date ? task.due_date : 'бессрок';
-                        const taskDiv = document.createElement('div');
-                        taskDiv.className = 'task-card';
-                        taskDiv.innerHTML = `
-                            <div class="task-info">
-                                <div class="task-title">${escapeHtml(task.title)}</div>
-                                <div class="task-priority" style="background: ${priorityClass};">${priorityText}</div>
-                                <div class="due-display">${dueDisplay}</div>
-                            </div>
-                            <div class="task-actions">
-                                <button class="complete-btn" onclick="updateTask(${task.id})">✓</button>
-                                <button class="delete-btn" onclick="deleteTask(${task.id})">✕</button>
-                            </div>
-                        `;
-                        container.appendChild(taskDiv);
-                    });
-                }
-
-                updateStatsAndCharts(activeTasks, doneTasks);
+                allUserTasks = tasks.filter(t => t.user_id === currentUserId);
+                renderTasks(allUserTasks);
+                return;
             } catch(e) { console.error(e); }
         }
 
-        // Обновление статистики
-        function updateStatsAndCharts(activeTasks, doneTasks) {
-            const highCount = activeTasks.filter(t => t.priority === 'high').length;
-            const mediumCount = activeTasks.filter(t => t.priority === 'medium').length;
-            const lowCount = activeTasks.filter(t => t.priority === 'low').length;
-            const totalActive = activeTasks.length;
-            const maxCount = Math.max(highCount, mediumCount, lowCount, 1);
-            const maxHeight = 275;
+        // === ДЕМО-ЗАДАЧИ ===
+        allUserTasks = [...demoTasks];
+        renderTasks(allUserTasks);
+    }
 
-            const highPercent = totalActive > 0 ? Math.round((highCount / totalActive) * 100) : 0;
-            const mediumPercent = totalActive > 0 ? Math.round((mediumCount / totalActive) * 100) : 0;
-            const lowPercent = totalActive > 0 ? Math.round((lowCount / totalActive) * 100) : 0;
+    // === ОТРИСОВКА ЗАДАЧ ===
+    function renderTasks(tasks) {
+        const priorityOrder = { 'high': 1, 'medium': 2, 'low': 3 };
+        const activeTasks = tasks.filter(t => t.status !== 'done');
+        const doneTasks = tasks.filter(t => t.status === 'done');
 
-            document.getElementById('highBar').style.height = (highCount / maxCount * maxHeight) + 'px';
-            document.getElementById('mediumBar').style.height = (mediumCount / maxCount * maxHeight) + 'px';
-            document.getElementById('lowBar').style.height = (lowCount / maxCount * maxHeight) + 'px';
-            document.getElementById('highPercent').textContent = highPercent + '%';
-            document.getElementById('mediumPercent').textContent = mediumPercent + '%';
-            document.getElementById('lowPercent').textContent = lowPercent + '%';
+        activeTasks.sort((a, b) => priorityOrder[a.priority] - priorityOrder[b.priority]);
 
-            // Списки в карточках
-            const doneContainer = document.getElementById('doneTasksList');
-            doneContainer.innerHTML = '';
-            if (doneTasks.length === 0) {
-                doneContainer.innerHTML = '<span style="font-size:16px; color:#888;">Нет выполненных задач</span>';
-            } else {
-                doneTasks.forEach(task => {
-                    const item = createTaskItem(task, 'done');
-                    doneContainer.appendChild(item);
-                });
-            }
-
-            const activeContainer = document.getElementById('activeTasksList');
-            activeContainer.innerHTML = '';
-            if (activeTasks.length === 0) {
-                activeContainer.innerHTML = '<span style="font-size:16px; color:#888;">Нет активных задач</span>';
-            } else {
-                activeTasks.forEach(task => {
-                    const item = createTaskItem(task, 'active');
-                    activeContainer.appendChild(item);
-                });
-            }
-
-            // Большая карточка
-            const totalAll = activeTasks.length + doneTasks.length;
-            const doneTotal = doneTasks.length;
-            const activeTotal = activeTasks.length;
-            const donePercentAll = totalAll > 0 ? Math.round((doneTotal / totalAll) * 100) : 0;
-            const activePercentAll = totalAll > 0 ? Math.round((activeTotal / totalAll) * 100) : 0;
-
-            document.getElementById('bigTotalCount').textContent = totalAll;
-            document.getElementById('bigDoneCount').textContent = doneTotal;
-            document.getElementById('bigActiveCount').textContent = activeTotal;
-            document.getElementById('bigDonePercent').textContent = donePercentAll + '%';
-            document.getElementById('bigDonePercentLabel').textContent = donePercentAll + '%';
-            document.getElementById('bigActivePercentLabel').textContent = activePercentAll + '%';
-            document.getElementById('bigDoneBar').style.width = donePercentAll + '%';
-            document.getElementById('bigActiveBar').style.width = activePercentAll + '%';
-            document.getElementById('bigHighCount').textContent = highCount;
-            document.getElementById('bigMediumCount').textContent = mediumCount;
-            document.getElementById('bigLowCount').textContent = lowCount;
-
-            const circumference = 314;
-            const doneCirc = totalAll > 0 ? (doneTotal / totalAll) * circumference : 0;
-            const activeCirc = totalAll > 0 ? (activeTotal / totalAll) * circumference : 0;
-            const doneCircle = document.getElementById('bigDoneCircle');
-            const activeCircle = document.getElementById('bigActiveCircle');
-            if (doneCircle) {
-                doneCircle.setAttribute('stroke-dasharray', `${doneCirc} ${circumference}`);
-                doneCircle.setAttribute('stroke', '#4CAF50');
-            }
-            if (activeCircle) {
-                activeCircle.setAttribute('stroke-dasharray', `${activeCirc} ${circumference}`);
-                activeCircle.setAttribute('stroke', '#FF6B6B');
-            }
+        // Список "Мои задачи"
+        const container = document.getElementById('tasksList');
+        container.innerHTML = '';
+        if (activeTasks.length === 0) {
+            container.innerHTML = '<p style="text-align:center; color:white;">Нет активных задач</p>';
+        } else {
+            activeTasks.forEach(task => {
+                const priorityText = task.priority === 'high' ? 'Высокий' : task.priority === 'medium' ? 'Средний' : 'Низкий';
+                const priorityClass = task.priority === 'high' ? '#e57373' : task.priority === 'medium' ? '#ffb74d' : '#64b5f6';
+                const dueDisplay = task.due_date ? task.due_date : 'бессрок';
+                const taskDiv = document.createElement('div');
+                taskDiv.className = 'task-card';
+                taskDiv.innerHTML = `
+                    <div class="task-info">
+                        <div class="task-title">${escapeHtml(task.title)}</div>
+                        <div class="task-priority" style="background: ${priorityClass};">${priorityText}</div>
+                        <div class="due-display">${dueDisplay}</div>
+                    </div>
+                    <div class="task-actions">
+                        <button class="complete-btn" onclick="updateTask(${task.id})">✓</button>
+                        <button class="delete-btn" onclick="deleteTask(${task.id})">✕</button>
+                    </div>
+                `;
+                container.appendChild(taskDiv);
+            });
         }
 
-        // Создание элемента задачи для карточки
-        function createTaskItem(task, type) {
-            const div = document.createElement('div');
-            div.className = `task-item-small ${type}`;
-            const priorityText = task.priority === 'high' ? 'Выс' : task.priority === 'medium' ? 'Ср' : 'Низ';
-            const dueDisplay = task.due_date ? task.due_date : 'бессрок';
-            div.innerHTML = `
-                <span class="task-title-text" onclick="openTaskModalById(${task.id})">${escapeHtml(task.title)}</span>
-                <span style="display: flex; align-items: center; gap: 8px;">
-                    <span class="due-display">${dueDisplay}</span>
-                    <span class="priority-tag ${task.priority}">${priorityText}</span>
-                    <button class="delete-btn-small" onclick="event.stopPropagation(); deleteTask(${task.id})">✕</button>
-                </span>
-            `;
-            return div;
+        // Карточки
+        updateStatsAndCharts(activeTasks, doneTasks);
+    }
+
+    // === СТАТИСТИКА ===
+    function updateStatsAndCharts(activeTasks, doneTasks) {
+        const highCount = activeTasks.filter(t => t.priority === 'high').length;
+        const mediumCount = activeTasks.filter(t => t.priority === 'medium').length;
+        const lowCount = activeTasks.filter(t => t.priority === 'low').length;
+        const totalActive = activeTasks.length;
+        const maxCount = Math.max(highCount, mediumCount, lowCount, 1);
+        const maxHeight = 275;
+
+        const highPercent = totalActive > 0 ? Math.round((highCount / totalActive) * 100) : 0;
+        const mediumPercent = totalActive > 0 ? Math.round((mediumCount / totalActive) * 100) : 0;
+        const lowPercent = totalActive > 0 ? Math.round((lowCount / totalActive) * 100) : 0;
+
+        document.getElementById('highBar').style.height = (highCount / maxCount * maxHeight) + 'px';
+        document.getElementById('mediumBar').style.height = (mediumCount / maxCount * maxHeight) + 'px';
+        document.getElementById('lowBar').style.height = (lowCount / maxCount * maxHeight) + 'px';
+        document.getElementById('highPercent').textContent = highPercent + '%';
+        document.getElementById('mediumPercent').textContent = mediumPercent + '%';
+        document.getElementById('lowPercent').textContent = lowPercent + '%';
+
+        // Карточки выполненных/активных
+        const doneContainer = document.getElementById('doneTasksList');
+        doneContainer.innerHTML = '';
+        if (doneTasks.length === 0) {
+            doneContainer.innerHTML = '<span style="font-size:16px; color:#888;">Нет выполненных задач</span>';
+        } else {
+            doneTasks.forEach(task => {
+                const item = createTaskItem(task, 'done');
+                doneContainer.appendChild(item);
+            });
         }
 
-        window.openTaskModalById = function(id) {
-            const task = allUserTasks.find(t => t.id === id);
-            if (task) {
-                openTaskModal(task);
-            } else {
-                showMessage('Задача не найдена', true);
-            }
-        };
-
-        function openTaskModal(task) {
-            currentEditingTaskId = task.id;
-            currentEditingTaskIsDone = task.status === 'done';
-            document.getElementById('modalTitle').textContent = task.title;
-            document.getElementById('modalDescriptionInput').value = task.description || '';
-            document.getElementById('modalDueDateInput').value = task.due_date || '';
-            const priorityMap = { 'high': 'Высокий', 'medium': 'Средний', 'low': 'Низкий' };
-            document.getElementById('modalPriorityDisplay').textContent = `Приоритет: ${priorityMap[task.priority] || 'Средний'}`;
-            document.getElementById('modalPriorityInput').value = task.priority || 'medium';
-
-            if (currentEditingTaskIsDone) {
-                document.getElementById('modalDescriptionInput').disabled = false;
-                document.getElementById('modalDueDateInput').disabled = true;
-                document.getElementById('modalPriorityInput').style.display = 'none';
-                document.getElementById('modalPriorityDisplay').style.display = 'block';
-                document.getElementById('modalSaveBtn').style.display = 'block';
-            } else {
-                document.getElementById('modalDescriptionInput').disabled = false;
-                document.getElementById('modalDueDateInput').disabled = false;
-                document.getElementById('modalPriorityInput').style.display = 'block';
-                document.getElementById('modalPriorityDisplay').style.display = 'none';
-                document.getElementById('modalSaveBtn').style.display = 'block';
-            }
-
-            document.getElementById('taskModal').style.display = 'flex';
+        const activeContainer = document.getElementById('activeTasksList');
+        activeContainer.innerHTML = '';
+        if (activeTasks.length === 0) {
+            activeContainer.innerHTML = '<span style="font-size:16px; color:#888;">Нет активных задач</span>';
+        } else {
+            activeTasks.forEach(task => {
+                const item = createTaskItem(task, 'active');
+                activeContainer.appendChild(item);
+            });
         }
 
-        function closeModal() {
-            document.getElementById('taskModal').style.display = 'none';
-            currentEditingTaskId = null;
-            currentEditingTaskIsDone = false;
-        }
-        document.getElementById('taskModal').addEventListener('click', function(e) {
-            if (e.target === this) closeModal();
-        });
+        // Большая карточка
+        const totalAll = activeTasks.length + doneTasks.length;
+        const doneTotal = doneTasks.length;
+        const activeTotal = activeTasks.length;
+        const donePercentAll = totalAll > 0 ? Math.round((doneTotal / totalAll) * 100) : 0;
 
-        window.saveTaskDetails = function() {
-            if (currentEditingTaskId === null) return;
-            const description = document.getElementById('modalDescriptionInput').value.trim();
-            const due_date = document.getElementById('modalDueDateInput').value;
-            const priority = document.getElementById('modalPriorityInput').value;
-            if (!localTasks[currentEditingTaskId]) localTasks[currentEditingTaskId] = {};
-            localTasks[currentEditingTaskId].description = description;
+        document.getElementById('bigTotalCount').textContent = totalAll;
+        document.getElementById('bigDoneCount').textContent = doneTotal;
+        document.getElementById('bigActiveCount').textContent = activeTotal;
+        document.getElementById('bigDonePercent').textContent = donePercentAll + '%';
+        document.getElementById('bigDonePercentLabel').textContent = donePercentAll + '%';
+        document.getElementById('bigActivePercentLabel').textContent = (100 - donePercentAll) + '%';
+        document.getElementById('bigDoneBar').style.width = donePercentAll + '%';
+        document.getElementById('bigActiveBar').style.width = (100 - donePercentAll) + '%';
+        document.getElementById('bigHighCount').textContent = highCount;
+        document.getElementById('bigMediumCount').textContent = mediumCount;
+        document.getElementById('bigLowCount').textContent = lowCount;
+
+        const circumference = 314;
+        const doneCirc = totalAll > 0 ? (doneTotal / totalAll) * circumference : 0;
+        const activeCirc = totalAll > 0 ? (activeTotal / totalAll) * circumference : 0;
+        const doneCircle = document.getElementById('bigDoneCircle');
+        const activeCircle = document.getElementById('bigActiveCircle');
+        if (doneCircle) {
+            doneCircle.setAttribute('stroke-dasharray', `${doneCirc} ${circumference}`);
+            doneCircle.setAttribute('stroke', '#4CAF50');
+        }
+        if (activeCircle) {
+            activeCircle.setAttribute('stroke-dasharray', `${activeCirc} ${circumference}`);
+            activeCircle.setAttribute('stroke', '#FF6B6B');
+        }
+    }
+
+    // === ЭЛЕМЕНТ ЗАДАЧИ ДЛЯ КАРТОЧКИ ===
+    function createTaskItem(task, type) {
+        const div = document.createElement('div');
+        div.className = `task-item-small ${type}`;
+        const priorityText = task.priority === 'high' ? 'Выс' : task.priority === 'medium' ? 'Ср' : 'Низ';
+        const dueDisplay = task.due_date ? task.due_date : 'бессрок';
+        div.innerHTML = `
+            <span class="task-title-text" onclick="openTaskModalById(${task.id})">${escapeHtml(task.title)}</span>
+            <span style="display: flex; align-items: center; gap: 8px;">
+                <span class="due-display">${dueDisplay}</span>
+                <span class="priority-tag ${task.priority}">${priorityText}</span>
+                <button class="delete-btn-small" onclick="event.stopPropagation(); deleteTask(${task.id})">✕</button>
+            </span>
+        `;
+        return div;
+    }
+
+    // === МОДАЛКА ===
+    window.openTaskModalById = function(id) {
+        const task = allUserTasks.find(t => t.id === id);
+        if (!task) {
+            showMessage('Задача не найдена', true);
+            return;
+        }
+        currentEditingTaskId = task.id;
+        currentEditingTaskIsDone = task.status === 'done';
+        document.getElementById('modalTitle').textContent = task.title;
+        document.getElementById('modalDescriptionInput').value = task.description || '';
+        document.getElementById('modalDueDateInput').value = task.due_date || '';
+        const priorityMap = { 'high': 'Высокий', 'medium': 'Средний', 'low': 'Низкий' };
+        document.getElementById('modalPriorityDisplay').textContent = `Приоритет: ${priorityMap[task.priority] || 'Средний'}`;
+        document.getElementById('modalPriorityInput').value = task.priority || 'medium';
+
+        if (currentEditingTaskIsDone) {
+            document.getElementById('modalDescriptionInput').disabled = false;
+            document.getElementById('modalDueDateInput').disabled = true;
+            document.getElementById('modalPriorityInput').style.display = 'none';
+            document.getElementById('modalPriorityDisplay').style.display = 'block';
+            document.getElementById('modalSaveBtn').style.display = 'block';
+        } else {
+            document.getElementById('modalDescriptionInput').disabled = false;
+            document.getElementById('modalDueDateInput').disabled = false;
+            document.getElementById('modalPriorityInput').style.display = 'block';
+            document.getElementById('modalPriorityDisplay').style.display = 'none';
+            document.getElementById('modalSaveBtn').style.display = 'block';
+        }
+        document.getElementById('taskModal').style.display = 'flex';
+    };
+
+    // === СОХРАНЕНИЕ ИЗМЕНЕНИЙ ===
+    window.saveTaskDetails = function() {
+        if (currentEditingTaskId === null) return;
+        const description = document.getElementById('modalDescriptionInput').value.trim();
+        const due_date = document.getElementById('modalDueDateInput').value;
+        const priority = document.getElementById('modalPriorityInput').value;
+
+        // Обновляем в демо-данных
+        const task = allUserTasks.find(t => t.id === currentEditingTaskId);
+        if (task) {
+            task.description = description;
             if (!currentEditingTaskIsDone) {
-                localTasks[currentEditingTaskId].due_date = due_date;
-                localTasks[currentEditingTaskId].priority = priority;
+                task.due_date = due_date;
+                task.priority = priority;
             }
-            saveLocalTasks();
-            closeModal();
-            loadTasks();
-            showMessage('Изменения сохранены');
-        };
+        }
+        closeModal();
+        loadTasks();
+        showMessage('Изменения сохранены');
+    };
 
-        window.createTask = async function() {
-            const title = document.getElementById('taskTitle').value.trim();
-            const priority = document.getElementById('taskPriority').value;
-            const description = document.getElementById('taskDescription').value.trim();
-            const due_date = document.getElementById('taskDueDate').value;
-            if (!title) return showMessage('Введите задачу', true);
+    function closeModal() {
+        document.getElementById('taskModal').style.display = 'none';
+        currentEditingTaskId = null;
+        currentEditingTaskIsDone = false;
+    }
+
+    // === СОЗДАНИЕ ЗАДАЧИ ===
+    window.createTask = async function() {
+        const title = document.getElementById('taskTitle').value.trim();
+        const priority = document.getElementById('taskPriority').value;
+        const description = document.getElementById('taskDescription').value.trim();
+        const due_date = document.getElementById('taskDueDate').value;
+        if (!title) return showMessage('Введите задачу', true);
+
+        if (isBackendAvailable) {
             try {
                 const response = await fetch('/tasks', {
                     method: 'POST',
@@ -1282,62 +1314,107 @@
                     body: JSON.stringify({ user_id: currentUserId, title, priority })
                 });
                 if (!response.ok) throw new Error('Ошибка создания');
-                const tasksRes = await fetch('/tasks');
-                const allTasks = await tasksRes.json();
-                const userTasks = allTasks.filter(t => t.user_id === currentUserId);
-                const newTask = userTasks.reduce((a, b) => a.id > b.id ? a : b);
-                localTasks[newTask.id] = { description, due_date };
-                saveLocalTasks();
                 document.getElementById('taskTitle').value = '';
                 document.getElementById('taskDescription').value = '';
                 document.getElementById('taskDueDate').value = '';
                 loadTasks();
                 showMessage('Задача добавлена');
-            } catch(e) { showMessage('Ошибка создания', true); }
-        };
+                return;
+            } catch(e) { showMessage('Ошибка создания', true); return; }
+        }
 
-        window.updateTask = async function(id) {
+        // === ДЕМО-СОЗДАНИЕ ===
+        const newTask = {
+            id: demoIdCounter++,
+            title: title,
+            priority: priority,
+            status: 'todo',
+            description: description,
+            due_date: due_date
+        };
+        demoTasks.push(newTask);
+        allUserTasks.push(newTask);
+        document.getElementById('taskTitle').value = '';
+        document.getElementById('taskDescription').value = '';
+        document.getElementById('taskDueDate').value = '';
+        loadTasks();
+        showMessage('Задача добавлена (демо)');
+    };
+
+    // === ОБНОВЛЕНИЕ СТАТУСА ===
+    window.updateTask = async function(id) {
+        if (isBackendAvailable) {
             try {
                 await fetch(`/tasks/${id}?new_status=done`, { method: 'PATCH' });
                 loadTasks();
                 showMessage('Задача выполнена!');
-            } catch(e) { showMessage('Ошибка', true); }
-        };
-
-        window.deleteTask = async function(id) {
-            if (!confirm('Удалить задачу?')) return;
-            try {
-                await fetch(`/tasks/${id}`, { method: 'DELETE' });
-                delete localTasks[id];
-                saveLocalTasks();
-                loadTasks();
-                showMessage('Задача удалена');
-            } catch(e) { showMessage('Ошибка удаления', true); }
-        };
-
-        window.logout = function() {
-            currentUserId = null;
-            document.getElementById('authSection').style.display = 'flex';
-            document.getElementById('tasksSection').style.display = 'none';
-            document.getElementById('loginEmail').value = '';
-            document.getElementById('loginPassword').value = '';
-            document.getElementById('regEmail').value = '';
-            document.getElementById('regPassword').value = '';
-            closeModal();
-        };
-
-        function escapeHtml(str) {
-            return str.replace(/[&<>]/g, function(m) {
-                if (m === '&') return '&amp;';
-                if (m === '<') return '&lt;';
-                if (m === '>') return '&gt;';
-                return m;
-            });
+                return;
+            } catch(e) { showMessage('Ошибка', true); return; }
         }
 
-        document.addEventListener('DOMContentLoaded', function() {
-            loadLocalTasks();
+        // Демо
+        const task = allUserTasks.find(t => t.id === id);
+        if (task) {
+            task.status = 'done';
+            // Обновляем в demoTasks
+            const demoTask = demoTasks.find(t => t.id === id);
+            if (demoTask) demoTask.status = 'done';
+            loadTasks();
+            showMessage('Задача выполнена!');
+        }
+    };
+
+    // === УДАЛЕНИЕ ===
+    window.deleteTask = async function(id) {
+        if (!confirm('Удалить задачу?')) return;
+
+        if (isBackendAvailable) {
+            try {
+                await fetch(`/tasks/${id}`, { method: 'DELETE' });
+                loadTasks();
+                showMessage('Задача удалена');
+                return;
+            } catch(e) { showMessage('Ошибка удаления', true); return; }
+        }
+
+        // Демо
+        demoTasks = demoTasks.filter(t => t.id !== id);
+        allUserTasks = allUserTasks.filter(t => t.id !== id);
+        loadTasks();
+        showMessage('Задача удалена (демо)');
+    };
+
+    // === ВЫХОД ===
+    window.logout = function() {
+        currentUserId = null;
+        document.getElementById('authSection').style.display = 'flex';
+        document.getElementById('tasksSection').style.display = 'none';
+        document.getElementById('loginEmail').value = '';
+        document.getElementById('loginPassword').value = '';
+        document.getElementById('regEmail').value = '';
+        document.getElementById('regPassword').value = '';
+        closeModal();
+    };
+
+    function escapeHtml(str) {
+        return str.replace(/[&<>]/g, function(m) {
+            if (m === '&') return '&amp;';
+            if (m === '<') return '&lt;';
+            if (m === '>') return '&gt;';
+            return m;
         });
-    </script>
+    }
+
+    // === ЗАПУСК ===
+    document.addEventListener('DOMContentLoaded', async function() {
+        // Сначала проверяем бэкенд
+        await checkBackend();
+        // Если нет задач — показываем демо
+        if (!isBackendAvailable) {
+            console.log('🔄 Демо-режим активирован');
+            // Можно сразу показать демо-задачи при входе
+        }
+    });
+</script>
 </body>
 </html>
